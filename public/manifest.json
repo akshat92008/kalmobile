@@ -1,0 +1,17 @@
+{
+  "name": "Kaliyuga: The Bleeding Crown — Mobile Edition",
+  "short_name": "Kaliyuga",
+  "description": "Vedic 2.5D Isometric Action Roguelike",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#090807",
+  "theme_color": "#090807",
+  "icons": [
+    {
+      "src": "/assets/aistudio/Warrior_Beneath_the_Blood_Eclipse.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

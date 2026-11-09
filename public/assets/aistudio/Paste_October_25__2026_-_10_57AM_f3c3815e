@@ -1,0 +1,216 @@
+ok now only talking dont eecute anything i think background assets are good core gameplay is okay for now will have to improve the thing bothering is that image sliding or 2-3 image changing.i was going through the aaa game no.of sprites uses it it about 1000 sprites images for a single character.right now the fluidity of art is missing which is the central issue first we fix that then other effects, vfx, and all make it hades style so just tell me how we tackle it.
+Gemini 4 Argon
+Ran for 44s
+lightbulb
+Thought for 45 seconds
+You just hit on the single biggest wall in 2D/2.5D game development. Your eye caught the exact problem immediately:
+Right now, when Rudra runs or attacks, the game is swapping between 2 or 3 static drawings while his 
+ position moves smoothly at 60 frames per second. Because his feet aren’t actually cycling through an 8-frame contact-pass-push stride, and his torso isn't twisting through intermediate frames, your brain sees "a cardboard cutout sliding across the floor and snapping between 3 poses."
+And your research is 100% spot-on: in Hades, Zagreus has over 1,200+ rendered sprite frames across 8-16 isometric angles.
+Here is the brutal truth about why AI image generators alone fail at this, how studios like Supergiant (Hades) and Motion Twin (Dead Cells) actually solve it (spoiler: they do not hand-draw 1,000 sprites!), and the 3 realistic ways we can tackle this for Kaliyuga.
+1. Why Generating 1,000 Sprites Directly in Gemini/Midjourney Doesn't Work
+If you ask an AI image generator to make 9 separate images of Rudra, it generates 9 different paintings.
+Even with the same prompt, the camera angle shifts by 
+, his sword length changes by 
+, his foot position jumps, and his proportions drift between images.
+When you flip between Pose 1 and Pose 2 in-game, instead of looking like smooth motion, the character "pops" and morphs—and while moving between those 2 poses, the static image slides across the ground.
+Even if you ask Gemini for a "4x4 sprite sheet of a run cycle," AI image models do not understand biomechanics—frames 1 to 16 won't have consistent limb lengths or foot-planting, so it jitters wildly.
+2. How Hades, Dead Cells, and Indie Hits Actually Get 1,000+ Fluid Frames
+No indie studio draws 1,000 frames by hand anymore. Every modern 2D/2.5D hit uses one of three pipelines:
+Pipeline A: The "2D Puppet / Skeletal Rig" Method (Darkest Dungeon, Hollow Knight: Silksong, Cult of the Lamb, Ender Lilies)
+Instead of swapping whole-body pictures, you take ONE master high-res illustration of Rudra and slice his body into 8–10 separate body-part layers:
+Head & Hair
+Torso (Chest)
+Front Upper Arm + Front Forearm + Sword
+Back Upper Arm + Back Forearm
+Pelvis / Dhoti Sash
+Front Thigh + Front Shin/Foot
+Back Thigh + Back Shin/Foot
+Then, using 2D Bone/Skeletal Animation (either directly in our code with a 2D Inverse Kinematics bone rig, or using a tool like Spine2D / DragonBones / Rive):
+Every bone rotates smoothly at 60 FPS using mathematical sine/keyframes.
+When Rudra runs, his thighs and shins physically scissor back and forth, his knees bend on contact, his torso leans forward, his arms counter-swing, and his hair/sash flow with physics.
+Why this is huge for you: You keep the exact 10/10 hand-inked Mignola/Hades artwork you already generated, your character proportions never morph or pop, and you get true 60 FPS continuous fluidity (zero image sliding, zero 2-frame popping) without needing 3D software.
+Pipeline B: The "AI Image 
+ AI Video 
+ Frame Extraction" Method (The 2025/2026 AI Indie Secret Weapon)
+Since you have 2 Google AI Pro accounts, you have access to Veo / Image-to-Video (and tools like Kling / Runway):
+You take one clean starting pose of Rudra on a solid pure-white or green-screen background (e.g., Rudra Idle).
+You feed that image into Image-to-Video with a prompt like: "Fixed orthographic camera, solid white background, the warrior performs a full 2-step running stride loop in place, maintaining exact Mignola ink outlines."
+A 2-second video at 24fps gives you 48 continuous, temporally consistent frames where the AI video model interpolates every single muscle, cloth fold, and footstep between Pose A and Pose B!
+We extract 8 to 12 evenly spaced PNG frames from that video (Run_01.png through Run_10.png), strip the white background automatically, and play them at 12–15 FPS inside the engine.
+Result: A real 8-to-12 frame flipbook animation for Run, Idle Breathing, Slash Combo, and Boss Slam where every intermediate frame flows into the next.
+Pipeline C: The Actual Hades / Dead Cells Method (3D Model 
+ Toon Shader 
+ 2D Sprite Sheet)
+How did Supergiant actually make 1,200 frames of Zagreus in Hades?
+Zagreus is actually a 3D model.
+They animated him in 3D (using free motion-capture animations from Mixamo for running, dashing, slashing, and dying).
+In Blender (which is 100% free and runs like butter on your MacBook M3 Pro), they put a Mignola/Hades Comic Ink Shader on the 3D model and locked an Isometric Camera at 
+.
+They hit "Render Sprite Sheet" and Blender automatically spits out 8 directions 
+ 16 frames = 128 perfectly aligned, transparent PNGs for every animation in 30 seconds.
+You can even convert your 2D image of Rudra into a 3D mesh in 10 seconds using Tripo3D / Meshy / Rodin (free web tools), auto-rig it in Mixamo with zero coding/modeling skills, and render out 500+ sprites in Blender.
+3. My Honest Verdict: How Should We Tackle This First?
+If we want immediate, dramatic results without forcing you to learn Blender right now, we should combine two layers:
+Option 1 (We can do this right inside the code + 1 segmented character sheet): True 2D Multi-Bone Skeletal Rigging ("Paper-Doll / Spine2D Style").
+Right now, our code just draws Rudra as a single flat sticker (or a crude top/bottom half split), which is why he looks like a sliding statue.
+Instead, we can build a real 10-bone 2D Skeletal Animator (Hip -> Torso -> Head, Left/Right Thigh -> Shin -> Foot, Left/Right UpperArm -> Forearm -> Weapon) or use a clean part-sheet where Rudra’s legs, arms, torso, cape, and sword are articulated at the joints at 60 FPS with foot-planting IK (so his feet actually plant on the Kurukshetra soil and push off instead of sliding!).
+Option 2 (Using your Google AI Pro accounts): 8-Frame Strip Generation / Video-to-Sprite Extraction.
+For Rudra’s Run Cycle and 3-Hit Sword Combo, instead of using 1 single image for "Run", we generate an 8-frame continuous Run Cycle strip (either via a horizontal 8-pose contact-pass-reach sheet prompt or by extracting 8 frames from a 2-second AI video of your Rudra sprite running in place).
+Which path fits your workflow best right now?
+Path 1: You want to stay 100% inside Gemini Image Generation + our codebase — tell me, and I will design the Part-Segmented Skeletal Rig + 8-Frame Run/Slash Strip Pipeline so Rudra's limbs, sword, and footsteps animate smoothly at 60 FPS with zero sliding.
+Path 2: You want to try the AI Image 
+ Video 
+ 12-Frame Sprite Sheet workflow (or the 2D Image 
+ 3D Mixamo 
+ Sprite Sheet workflow) on your MacBook M3 Pro — tell me, and I will give you the exact step-by-step playbook.
+hey like just tell shall if i creeate 3d models and upload here and rig it inside mixamo will it be better for kaliyug .Liek you talked about path 1 do you have everything needed for path 1 or need more images also , which is best option tell me , can you please tell like keeping character 3d and art style 2d arena and all that just tell dont write any code how did cross code did that ?? just tell we are exploring
+Gemini 4 Argon
+Ran for 1m 3s
+lightbulb
+Thought for 1 minute 3 seconds
+Let’s break this down completely honestly, because you are asking the exact right architectural questions before sinking weeks of effort into the wrong pipeline.
+1. First: How Did CrossCode Actually Do It?
+CrossCode (built in HTML5/JavaScript by Radical Fish Games) used tiny 16-bit SNES pixel art (32x48 pixels per character).
+Because Lea (the main character) is only 32 pixels wide, a pixel artist can draw an 8-frame running animation in 20 minutes just by moving 6 pixels for her legs and 4 pixels for her arms.
+Even then, CrossCode took 7 years to finish because drawing 8 directions 
+ 8 frames by hand is exhausting.
+Why CrossCode’s exact sprite method doesn't work for our art style: Our art style for Kaliyuga is High-Resolution Hand-Inked Comic Art (Hades / Mike Mignola style), not tiny 32-pixel dots. You cannot move 4 pixels to animate Rudra—if a high-res illustration doesn’t have 60 FPS limb articulation, your eye immediately sees a stiff painting sliding across the floor.
+2. Can We Use 3D Characters (Rigged in Mixamo) Inside Our 2D Hand-Painted Arenas?
+YES. Not only is it possible, it is one of the most famous AAA/AA techniques in game history.
+Games like Disco Elysium, Curse of the Dead Gods, Ravenswatch, Fear & Hunger / Pillars of Eternity, and Blade Chimera use this exact hybrid:
+The Arena / Environment stays 2D: Your 16:9 hand-inked Kurukshetra backgrounds and 2D destructible props stay exactly as they are right now (because your 2D backgrounds already look 10/10 and cost zero GPU performance).
+The Characters (Rudra, Dundubhi, Vrikodara, Enemies) are 3D Models (.glb) rendered on a transparent 3D layer directly over the 2D arena using a Locked Isometric Camera that matches the exact angle of the 2D background!
+How we make the 3D model match the 2D Mignola/Hades art style:
+In our game engine (using Three.js / WebGL), we apply a Custom Mignola Comic-Ink Toon Shader + Inverted-Hull Black Ink Outline to the 3D model at runtime:
+It crushes the 3D lighting into deep pitch-black shadows, Chola bronze mid-tones, and sharp ember rim-lights.
+It draws a thick sumi-ink black outline around the 3D character's silhouette and muscles.
+When the 3D model stands on the 2D Kurukshetra floor, it looks like a living, breathing 2D comic-book illustration moving at a buttery-smooth 60 FPS in all 360 degrees!
+Why the 3D Character (Mixamo) + 2D Painted Arena Hybrid is a Game-Changer for You:
+Infinite, 100% Fluid 60 FPS Animations in 5 Minutes:
+In Mixamo (free by Adobe), you upload a 3D character model, place 5 dots (Chin, Wrists, Elbows, Knees, Groin), and Mixamo rigs the entire skeleton automatically in 30 seconds.
+You can then download Sword & Shield Run, Great Sword 3-Hit Combo, Jump Slam, Parry Impact, Dodge Roll, Bow Draw, and Kneeling Death—and our engine can blend smoothly between Idle 
+ Run 
+ Slash in 0.15 seconds with zero popping and zero sliding!
+True 360-Degree Isometric Turning:
+With 2D sprites, Rudra can only face Left or Right (flipping horizontally).
+With a 3D model on our 2D arena, when you press W+D (diagonal up-right) or S+A (diagonal down-left), Rudra physically turns his body in all 8 directions while running and swinging his sword!
+How You Create the 3D Model Without Knowing 3D Modeling:
+You already have the clean, full-body 2D image of Rudra (Ashen_Warrior_with_Weathered_Sword).
+You upload that single 2D PNG of Rudra into an Image-to-3D AI generator (Tripo3D, Meshy.ai, Rodin Gen-2, or Hunyuan3D—all have free tiers or web interfaces).
+In 60 seconds, it turns your 2D Rudra image into a textured 3D mesh (.fbx or .glb).
+You upload that file to Mixamo.com, grab 6 animations, export as .glb, and upload it right here into AI Studio!
+3. Honest Comparison: Path 1 (2D Puppet / Sprite Strips) vs. Path 2 (3D Mixamo Characters + 2D Arena)
+Feature	Path 1: 2D Skeletal Puppet / AI Sprite Strips	Path 2: 3D Mixamo Character + 2D Arena Hybrid
+Visual Fluidity	7.5 / 10 — Limbs swing smoothly like Darkest Dungeon or Salt and Sanctuary, but the character is still a flat 2D side-view cutout that only flips Left/Right.	10 / 10 (Hades / Curse of the Dead Gods level) — True 60 FPS skeletal motion, weight transfer, foot planting, animation blending, and full 8-direction turning.
+Do I need more images for Path 1?	Yes. To do Path 1 properly without ugly tearing at the knees/elbows, we either need 1 "Exploded Body-Part Sheet" per character (Torso, Head, Upper Arm, Forearm+Sword, Thigh, Shin drawn separated on a white sheet) OR an 8-frame horizontal Run Cycle strip.	No extra 2D poses needed! You only need 1 single T-Pose / A-Pose front image of Rudra and Vrikodara 
+ convert to 3D in Tripo/Meshy 
+ rig in Mixamo.
+Work Required From You	Prompting Gemini for body-part sheets or 8-frame strips (which Gemini sometimes struggles to keep aligned).	Uploading 1 image of Rudra to Tripo3D/Meshy 
+ auto-rigging in Mixamo 
+ uploading the .glb file here.
+Commercial / Steam Viability	Looks like a good Flash / 2D puppet indie game (Salt & Sanctuary).	Looks like a legitimate 
+25 AA Steam Action Game (Hades, Ravenswatch, Curse of the Dead Gods).
+4. My Brutally Honest Verdict: Which One Should You Choose?
+If you want Kaliyuga to truly look like Hades and not a sliding 2D web prototype:
+Go with the Hybrid Path (2D Hand-Painted Arenas + 3D Mixamo-Rigged Characters with a Comic/Mignola Shader).
+Why? Because your 2D arenas (Vaitarani River, Kurukshetra Trenches, Burning Shishira Camp) already look phenomenal. The only thing breaking the illusion is the 2D character sliding and snapping between 2 static drawings.
+Putting a real Mixamo-animated 3D character (shaded with heavy Mignola black ink outlines and bronze rim-lighting) on top of your 2D arenas gives you 1,000+ frames of fluidity automatically, 8-directional movement, and smooth transition blending between every single sword swing and dash.
+Wait—what if we test how it works on just ONE character first (Rudra)?
+You don't have to convert the whole game at once!
+We can keep the 2D arenas and props exactly as they are, and test Rudra first.
+Or, if you don't want to touch Tripo3D / Mixamo today and want to see how far we can push Path 1 (2D Skeletal Limb Rigging) right now using the assets we already have, I can build a 2D Multi-Joint Limb & Torso Animator in our engine first so you can judge if 2D puppet animation is fluid enough for your taste before deciding on 3D Mixamo.
+Tell me what you think:
+Would you like to try the 2D Image 
+ 3D Mixamo .glb Hybrid for Rudra (I can tell you the exact 3-minute workflow to generate and rig him for free), OR do you want to see how far we can push 2D Skeletal Animation first?
+ok two things first change rudra main weapon as axe and i have to generate both of them seperately??? give prompt for them then
+Gemini 4 Argon
+Ran for 43s
+lightbulb
+Thought for 43 seconds
+YES — you MUST generate Rudra and his Axe as TWO SEPARATE images!
+Here is why that is the #1 Golden Rule of 3D Game Development & Mixamo:
+Why Mixamo fails if he holds the axe in the picture: If Rudra is holding an axe when you convert the image to 3D, the 3D generator melts the axe handle into his fingers and torso. When you upload that to Mixamo, Mixamo thinks the axe is part of his arm—so when he runs or bends his elbow, the metal axe bends like a rubber banana!
+How God of War and Hades actually do it:
+Model 1: You generate Rudra unarmed in a clean "A-Pose" (standing straight, arms angled out at 
+, hands empty, legs slightly apart, no cape blocking his arms). Mixamo rigs this 100% flawlessly in 15 seconds.
+Model 2: You generate The Parashu Great-Axe by itself.
+In our Game Engine: With one line of code, I lock the 3D Axe directly into Rudra’s RightHand bone (rightHandBone.add(parashuAxe)). Now, in every Mixamo animation (Running, Heavy Axe Cleave, Leap Slam, Dodge), the solid metal axe stays rigid in his grip, and we can attach exact fire/blood slash trails to the axe blade edge!
+(And changing Rudra’s main weapon to a Parashu — an ancient Vedic/Chola Bronze Great-Axe like Parashurama’s blood-axe — is a 10/10 choice. Heavy axe cleaves and ground-slams feel 10x more brutal than a generic sword.)
+Copy-Paste Prompts for Gemini Image Generation (For 2D-to-3D Conversion)
+Generate these two images first. Notice how these prompts are specifically engineered for Image-to-3D AI tools (Tripo3D / Meshy.ai / Rodin) so there are zero overlapping limbs, zero ground shadows, and crystal-clear 3D geometry.
+PROMPT 1: Rudra the Ash-Bound (Unarmed Symmetrical A-Pose for Mixamo Auto-Rigging)
+Prompt:
+Full-body front-facing 3D character reference sheet of Rudra, an ancient Indian dark-fantasy warrior, standing in a clean symmetrical A-pose for 3D modeling and rigging. Empty hands, no weapons. Arms extended straight outward at a 45-degree angle away from the torso with palms open and fingers separated. Legs straight and slightly apart, both feet flat on the same horizontal plane. He has lean, scarred, ash-covered bronze skin, shoulder-length matte black hair tied back (not covering the shoulders), a gaunt fierce bearded face, NO glowing gems on forehead, wearing oxidized Chola bronze pauldrons, weathered leather bracers, a tight battle-worn crimson dhoti tucked cleanly above the ankles (no long flowing cape or trailing ribbons that block the legs), and bronze greaves. Style of Hades by Supergiant Games and Mike Mignola ink shadows, sharp high-contrast cel-shaded textures. Pure solid flat #FFFFFF white background, zero ground shadow, zero props, full head-to-toe visibility.
+PROMPT 2: Rudra’s Main Weapon — "The Bleeding Parashu" (Standalone Vedic Great-Axe)
+Prompt:
+Single standalone weapon asset for 3D modeling: a brutal ancient Indian Parashu two-handed battle-axe (Vedic war-axe), standing vertically straight up and down in the center of the frame. The axe features a massive, heavy crescent-moon single-bevel chopping blade forged from dark meteorite black-iron with a jagged blood-stained cutting edge, ornate oxidized Chola bronze dragon-makara engravings along the cheek of the blade, a sharp rear armor-piercing spike, and a long weathered dark-ironwood shaft wrapped in tattered crimson leather grips with a heavy bronze pommel ring at the bottom. Style of Hades by Supergiant Games and Mike Mignola dark comic ink outlines. Pure solid flat #FFFFFF white background, zero ground shadow, zero hands holding it, full tip-to-pommel visibility, orthographic front view.
+How to Turn Those 2 Images into Playable 3D Models in 3 Minutes:
+Step 1 (Image 
+ 3D Mesh):
+Take the Rudra A-Pose PNG and the Parashu Axe PNG to Tripo3D.ai or Meshy.ai (both have free web generators).
+Upload the Rudra PNG 
+ click Generate 3D 
+ download Rudra as .fbx (for Mixamo) or .glb.
+Upload the Parashu Axe PNG 
+ click Generate 3D 
+ download the Axe directly as .glb.
+Step 2 (Auto-Rig Rudra in Mixamo — Free):
+Go to Mixamo.com (log in with a free Adobe account).
+Click Upload Character and drop in Rudra’s 3D file.
+Place the 5 circles on his Chin, Wrists, Elbows, Knees, and Groin 
+ click Next.
+In the Mixamo search bar, search "Great Sword" or "Melee Axe" and download:
+Great Sword Idle (with Skin)
+Great Sword Run (check the "In Place" box! Crucial so he doesn't run away from his own hitbox!)
+Great Sword Slash (or Standing Melee Attack Horizontal)
+Great Sword Jump Attack (for his Heavy Slam)
+Sword And Shield Impact / Block
+Or, if you want to test the pipeline even faster right now:
+Even if you just generate those 2 PNGs (or convert them to .glb / .fbx and upload them here), drop them into the chat and tell me what files you have—I will wire the Parashu Battle-Axe as Rudra’s primary weapon and build the renderer around them!
+give prompt according to the design we decided and he should have like mani removed i guess
+Gemini 4 Argon
+Ran for 28s
+lightbulb
+Thought for 28 seconds
+You are 100% right — in our locked lore and visual identity, his Mani (sacred forehead gem) was violently gouged out, leaving a dark, hollow, scarred wound cavity in the center of his forehead (NOT a glowing stone), with dried blood and sacred white Kurukshetra Vibhuti ash smeared across his skin.
+Here are the exact copy-paste prompts built strictly around our locked "Chola Bronze & Kurukshetra Ash" character design, formatted for clean 2D-to-3D conversion and Mixamo rigging:
+PROMPT 1: Rudra the Ash-Bound (Unarmed A-Pose — Gouged Forehead Cavity / Mani Removed)
+Copy-Paste Prompt:
+Full-body front-facing 3D character reference of Rudra, a cursed immortal Vedic warrior of Kurukshetra, standing in a clean symmetrical A-pose for 3D modeling and rigging. Empty hands, no weapons. Arms extended straight outward at a 45-degree angle away from the torso with open palms and separated fingers. Legs straight and slightly apart, feet flat on the same horizontal line. In the center of his forehead is a dark, hollow, scarred wound cavity where a sacred gem was gouged out (cauterized dark scar with a faint trace of dried crimson blood, NO glowing gem, NO crystal). He has gaunt, fierce bearded features, wild shoulder-length matte-black hair tied back so his neck and shoulders are clear, lean muscular anatomy covered in grey battle-ash and three horizontal white Vibhuti ash marks across his bare scarred chest and ribs. He wears a single cracked oxidized Chola-bronze pauldron on his left shoulder, heavy engraved bronze vambraces on his forearms, a battle-torn dark crimson warrior dhoti tied with a tarnished bronze waist-chain (tucked cleanly above the knees with no loose trailing cloth blocking the legs), and oxidized bronze shin-greaves. Art style of Hades by Supergiant Games and Mike Mignola heavy black sumi-ink shadows. Pure solid flat #FFFFFF white background, zero ground shadow, full head-to-toe visibility.
+PROMPT 2: Rudra’s Main Weapon — "Khanda-Parashu" (The Bleeding Chola-Bronze Great-Axe)
+Copy-Paste Prompt:
+Single standalone weapon asset for 3D modeling: an ancient Indian Vedic Parashu two-handed war-axe, standing strictly vertical and centered in orthographic front view. The weapon features a massive, brutal crescent chopping blade forged from blackened meteoric iron and oxidized antique Chola bronze, etched with Vedic Rudra trishul engravings and stained with dark dried blood along the bevelled cutting edge. On the back of the axe-head is a heavy armor-crushing spike. The long straight two-handed shaft is made of dark charred ironwood wrapped in crisscrossing strips of worn crimson cloth and sacred rudraksha beads near the grip, ending in a heavy spiked bronze pommel. Art style of Hades by Supergiant Games and Mike Mignola heavy black sumi-ink outlines. Pure solid flat #FFFFFF white background, zero ground shadow, no hands holding it, full tip-to-pommel visibility.
+Quick Tip Before You Convert Them in Tripo3D / Meshy:
+When Gemini generates Prompt 1 (Rudra), check two things before downloading:
+Are both of his hands completely empty and not touching his thighs?
+Is his forehead showing a dark scar/hollow mark (zero glowing yellow/blue gem)?
+When Gemini generates Prompt 2 (The Parashu Axe), make sure the axe shaft is straight up-and-down (vertical) with nothing cropping the top tip or bottom pommel.
+Once you have the images (or the .glb / .fbx files from Tripo3D / Meshy / Mixamo), upload them right here and we will wire Rudra and his Parashu Battle-Axe directly into the game!
+like in this window glb or flx files are not supported in google ai studio what to do?? then shall i apload zip file you will be able to extract it?? and insert it??
+Gemini 4 Argon
+Ran for 1m 16s
+lightbulb
+Thought for 1 minute 17 seconds
+YES! I have full Linux terminal access inside this workspace, so I can extract .zip files, rename files, and move .glb or .fbx models directly into the game engine.
+Here are the 3 easiest ways to get your .glb / .fbx files in if the chat upload window blocks them:
+Option 1: Upload a .zip File (or Rename .zip 
+ .txt / .png)
+On your MacBook, put all your .glb and Mixamo .fbx files into one folder, right-click it, and click Compress to make kaliyuga_models.zip.
+Try attaching kaliyuga_models.zip in the chat.
+If the chat box grays out .zip files too: Just rename kaliyuga_models.zip to kaliyuga_models.png (or kaliyuga_models.txt) on your Mac!
+Even though it has .png or .txt at the end, the actual binary bytes inside are still your .zip archive!
+As soon as you send it in chat, I will run unzip in the Linux terminal and extract every single .glb and .fbx model into /public/models/ in 1 second.
+Option 2: Drag & Drop Directly into the public/ Folder in the Code Tab
+Look at the top of AI Studio and click the Code tab (next to Preview).
+In the file explorer tree on the left, find the public folder.
+You can drag-and-drop .glb, .fbx, or .zip files directly from Finder into the public folder in the file tree!
+Huge Bonus Tip for Mixamo (.fbx Works Directly!)
+When you download animations from Mixamo.com, Mixamo gives you .fbx files. You do NOT need to convert them to .glb!
+Our engine supports both .fbx (FBXLoader) and .glb (GLTFLoader) natively:
+When downloading from Mixamo:
+Download 1 animation With Skin (for example, Idle.fbx — this contains Rudra's 3D body mesh + texture + skeleton).
+For the other animations (Run.fbx (check "In Place"!), Slash.fbx, JumpAttack.fbx, HitReaction.fbx), you can download them Without Skin (or With Skin, either works, though Without Skin makes the files 10x smaller!).
+Include your standalone Parashu Axe (.glb or .fbx from Tripo3D/Meshy).
+Zip them up (and rename .zip to .png or .txt if the chat button complains), drop it here, and I will extract and wire the entire 3D Mixamo character + Parashu Axe into the arena!
+i have added go through them and make the game ready make it hades style

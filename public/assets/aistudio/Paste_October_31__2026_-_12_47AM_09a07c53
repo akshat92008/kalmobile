@@ -1,0 +1,703 @@
+Kaliyuga: The Bleeding Crown
+The Full Story (v7) and Game Design. Part One (sections 1 to 24) is the story, cast, and full scripts for every act and both endings. Part Two (sections 25 to 40) is the game design: pitch, combat, progression, systems, art, audio, tech, scope, and risks. Anything I added is tagged [ADDED], so you can cut it.
+1. Your decisions (locked)
+The background is the war between gods and asuras, starting from Samudra Manthan.
+The gods are losing, so they pour all their power into an unborn child, Rudra. His mother dies at the birth.
+His father, Kaala-Chakra, was a good sage. The asuras corrupt him and he joins their side, and Rudra fights beside him.
+Kaala-Chakra tells Rudra the gods killed his brother. This is a lie.
+Rudra attacks heaven in revenge and kills a huge number of people.
+Vishnu tears the Mani out of him, breaks it into seven shards, and throws it away. Rudra falls, and three thousand years later the game begins.
+Every boss is an asura or rakshasa with a power from Hindu myth, and every boss matters to the story.
+Added by me:
+The victims were a camp of healers and families (the Shishira), not just soldiers.
+Rudra’s mother’s soul is inside the Mani, and Kaala-Chakra’s real goal is to bring his wife back.
+Savitri the ferrywoman and her daughter Ila.
+Vishnu’s one line, “Go and look.”
+The Look button, Sanjaya’s on-screen corrections, and two endings.
+2. The world and the war
+The Churning. Gods and asuras churn the ocean of milk together to win Amrita. Mount Mandara is the rod and the serpent Vasuki the rope. Halahala, a poison that would burn the world, rises first, and Shiva drinks it. Then the Amrita rises. Vishnu, as the enchantress Mohini, tricks the asuras out of their share. One asura, Rahu, slips into the gods’ line and drinks. Vishnu cuts off his head, but the nectar is already in his throat. The head lives on and swallows the sun, which is why eclipses happen.
+The war. The asuras never forgive the cheat. Their guru Shukracharya holds the Sanjivani, a rite that raises the dead, so every asura killed by day stands up again at night. The gods start to lose.
+The child. The gods’ last plan is one child who can hold all their power in a gem in his brow, the Mani. A mortal body can’t hold that much power alone, so the Mani needs a second soul to anchor it, from a mother who gives hers willingly. A sage’s wife, Suvarna, agrees. She does not tell her husband the price, and she dies in the birth. [ADDED: her soul stays inside the Mani.]
+Both sides are guilty. The gods cheated first, and the asuras answered with centuries of killing. Rudra’s crime is not that he picked a side. It’s that he never asked a question.
+3. The cast
+Rudra. Raised as a weapon and taught never to question. Loyal, proud, and honest, but his loyalty has no brakes. His flaw is that he never checks. His arc is learning to look, and then to stay and answer for what he did.
+Kaala-Chakra. Rudra’s father. A gentle, wise sage until Suvarna died. He blamed the gods. Shukracharya offered the Sanjivani to bring her back, if he joined the asuras and gave them his son’s power. Each compromise made the next one easier. He never loved Rudra. He loved Suvarna, and Rudra is the vessel that holds her. [ADDED]
+Nachiketa. Rudra’s older brother, a healer who bandaged birds as a boy and soldiers of both sides as a man. He’s the one who could have stopped it, and he appears only as absence: a letter, a sparrow, a tent.
+Savitri. The last ferrywoman of the Vaitarani, the river of the dead, and the only living mortal in the story. Her daughter Ila, sixteen, died in the camp. She knows exactly who Rudra is and pulls him out anyway, because only he can climb the mountain where Ila’s soul is held. Her lantern shows what is real and burns her remaining years. She is also using him, and she knows it. [ADDED]
+Ila. Savitri’s daughter. She stole sweets for her patients, treated asura wounded in the same tent as gods (“a wound has no side”), and kept a sparrow with a broken wing. She never appears. [ADDED]
+Vishnu. The god who arrives too late. He says “Go and look,” breaks the Mani to free the souls trapped in it, and never kills Rudra. Afterward he waits outside a locked gate, because opening it would destroy the souls that hold it shut. For public release, call him the Preserver. [ADDED]
+Sanjaya. A blind narrator and the Council’s court chronicler. The story he tells is the one he was given, and the game crosses out his words as the truth arrives. [ADDED]
+The Hound of Doomsday. Rudra’s own death, which has waited three thousand years. It’s an interlude, not a boss fight.
+4. What really happened
+Kaala-Chakra performs the rite that puts the gods’ power into his unborn son. Suvarna’s soul is the anchor, and he learns the price only after she dies. [ADDED]
+Shukracharya offers him the Sanjivani, which needs a huge amount of life-force. The war can supply it, so he joins the asuras.
+He plans one great harvest. Rudra will fire the Brahmashira, a weapon that burns souls loose, at a crowd. The Mani will catch every soul, and the Sanjivani will then melt it into resurrection light and bring Suvarna back. Pulling the Mani out of Rudra’s bone will kill him. [ADDED]
+Nachiketa, working in the healers’ camp, finds the ledger. He copies one page and writes to Ila: “I will tell Rudra at dawn.” [ADDED]
+On the Eighteenth Night a truce is signed. Kaala-Chakra brings Rudra a shrouded body and says the gods killed Nachiketa. It is a dead soldier. He has also moved families into a citadel on a hill “for protection.” He points and says: “Killers.” Rudra sees lamps in the windows. “Watchfires.” Two hundred paces away a child laughs. Rudra does not walk down. He fires.
+Forty thousand die, among them Nachiketa, in a tent his father chose. [ADDED]
+Vishnu arrives too late. Kaala-Chakra steps between them, says “Run,” and falls. Vishnu never touches him, because Time was held for one breath so it looks that way. Rudra’s last memory is the god killing his father.
+Vishnu says, “Rudra. Go and look.” Rudra doesn’t hear it and attacks. Vishnu tears the Mani out and breaks it into seven shards to free the souls. It fails, because the souls cling to the shards. Rudra can’t die while they hold him, so he falls into the river of the dead.
+Kaala-Chakra keeps the seventh shard, the heart, in his third eye. He gives the other six to six asuras as guards, telling each: “Your dead are inside the stone.” Four believe it. The twin kings take theirs by force. He seals heaven with the camp’s souls as the lock, which locks Vishnu out. [ADDED]
+He can’t rebuild the Mani himself, because it rejoins only on its bearer’s brow. So he waits three thousand years for his undying son to climb the mountain and bring him the shards. [ADDED]
+5. How the story is told
+Look. One button. Rudra stops and looks at a lamp, a toy, a tent flap, a ledger leaf. It’s optional and adds a thread. On the flashback hill, Look does nothing and the path is blocked. In the Vow ending, it’s open.
+Sanjaya’s corrections. His narration is crossed out and rewritten on screen as shards return the truth. There are seven.
+Shards are memories. Each returns one true scene from the Night of Ash.
+The Ferry. Between acts, Rudra and Savitri cross the river. Two people and a lantern. These scenes are the heart of the game.
+The lantern. When Rudra dies, he wakes in Savitri’s boat. Her voice gets quieter and the light cooler each time. It’s a story beat, never a punishing stat.
+6. The twelve bosses
+Act
+Boss
+Myth source
+Power in play
+Why they matter
+I
+Dundubhi (mini)
+Buffalo asura
+Charge, drum raises the dead
+His drum called the families into the walls
+I
+Vrikodara
+Rakshasa of the Hidimba clan, Kumbhakarna/Bakasura
+Furnace-belly vacuum, slag
+Rudra’s brother; his family died in the camp
+II
+Madhu and Kaitabha (mini)
+Twins born of Vishnu’s ear-wax
+Only die by choice, revive each other
+The god cheated them first
+II
+Vritra
+Swallower of the waters
+Floods, belly of the drowned
+A father’s grief made into a monster
+III
+Bhasmasura (mini)
+Asura whose touch burns to ash
+Instant-kill touch, copies your moves
+The failed prototype of Rudra
+III
+Mahabali
+Generous asura king
+Duel, revives once, arena shrinks in three steps
+Keeps an oath his master broke
+IV
+Maricha (mini)
+Golden-deer rakshasa
+Illusions, teleports
+Surpanakha’s ally
+IV
+Surpanakha
+Shape-shifting rakshasi
+Illusion, true-form switch
+She refuses to forgive him
+V
+Raktabeeja (mini)
+Asura whose every blood-drop is a new him
+Clones from every wound
+Guilt that multiplies
+V
+Shumbha and Nishumbha
+Twin asura kings
+Frost and thunder, fusion
+They bought his father
+VI
+Rahu (mini)
+The asura who drank Amrita
+Swallows light and the lantern
+The first thief of immortality
+VI
+Kaala-Chakra
+The corrupted sage
+Three forms
+The father
+
+Six Wardens hold six shards: Vrikodara, Vritra, Mahabali, Surpanakha, Shumbha, and Nishumbha. Kaala-Chakra holds the seventh.
+7. The prologue: five scrolls
+Painted scrolls in dark gold and ash, with a blind narrator over rough brushwork.
+The Churning. Gods and asuras pull Vasuki around Mandara. Shiva drinks the poison and Mohini pours the Amrita. Sanjaya: “I am blind. Everything I tell you was shown to me. Let it be written. Gods and asuras made the nectar together, and only one side drank it.” Rahu’s severed head flies up and bites the sun.
+The Child. Exhausted gods kneel around Suvarna and Kaala-Chakra. A baby cries and a gem opens in his brow. Far away, a woman hums once. Kaala-Chakra, hollow: “You are a weapon the gods made. I will make you a good one.”
+The Brothers. Nachiketa bandages a bird’s wing. Nachiketa: “Why do you always hit things?” Young Rudra: “So you can fix them.”
+The Lesson. Rudra, fifteen, stands over a captured asura boy. Rudra: “He is a child, Father. Should I?” Kaala-Chakra: “A weapon does not ask. It strikes.” Rudra’s hand shakes. He does it. Sanjaya: “That was the last time he asked.”
+The Fall of the Father. Shukracharya lifts a bowl of glowing water and a sage reaches for it. Sanjaya: “The asuras offered him a way to bring her back. He said yes. Then he said yes again. By the time his sons were grown, he had forgotten how to say no.”
+8. The opening (playable, about three minutes)
+The Rampage. Heaven’s gate burns. Rudra tears through guards with pure power, no posture bar. Sanjaya: The gods killed his brother. He answered. Kaala-Chakra (V.O.): “The gods took Nachiketa. Burn them all.”
+The Night of Ash, as Rudra remembers it. A black fortress, no lights, no families. The Look prompt never appears and the hill is a wall. Rudra: “Father?” Kaala-Chakra: “They are in there.” The Brahmashira: white fire, the color of a held breath.
+The Duel (unwinnable). Vishnu descends, calm. Rudra attacks with everything and Vishnu only blocks. Behind them, Kaala-Chakra says “Run” and falls. The attentive player sees him fall before the god’s hand moves. Vishnu: “Rudra. Go and look.” Rudra doesn’t hear it, and the player does. The Mani is torn out and breaks into seven shards, and Rudra falls toward black water.
+Black screen. A lantern, growing. Savitri: “Get up. You owe a lot of people.”
+The hub, the Vaitarani. Fog, ash, and a ferry, with Savitri’s lantern the only warm light in the game. Savitri: “Every time you fall, it costs me. Don’t fall.”
+9. Act I: The Charnel Plains (debt to the dead) — vertical slice
+Place. The battlefield after the war: rusted chariots, bone mountains, pyres.
+Story. Savitri sets her rule and her price: “At the end, you answer one question. Will you still be here?” Rudra doesn’t understand. He nods.
+Seeds to look at. Tally-leaves stamped with a spiral mark and a column headed Yield, a child’s clay lamp in a chariot wheel, and Vetala armor stamped with a drum. Nobody explains them.
+Mini-boss: Dundubhi. A buffalo asura with a bronze war-drum for a chest. He charges in straight lines, and if baited into a ruined pillar his tusks lodge for three seconds. His drumbeats raise skeletons. After the fight Savitri says: “That drum rang at dusk, from the Council’s hill. It meant: come inside, you are safe.” The drum skin is stamped with the spiral mark.
+Boss: Vrikodara (Shard #1). Rudra’s blood-brother, a rakshasa with a furnace in his belly. His wife was a healer in the camp and his son held her lamp. He was told his family is inside the shard.
+Vrikodara: “My son held the lamp for her. Do you remember the Shishira?”
+Rudra: “There was no camp. A fortress of killers.”
+Vrikodara: “Then take the shard and look.”
+Phase 1: he swings chained stone pillars and opens vacuum-inhale vortexes. Phase 2: he swallows the chains, grows by half, and vomits molten slag that splits the arena.
+He dies saying: “You did not know, brother. I could never hate you. That was what the hunger was for.” Being forgiven is not being absolved.
+Power unlocked: Rakshasa Crushing Stance.
+Shard #1 memory. A healer’s tent, a rakshasa child holding a lamp, the lamp going out. Rudra: “That could be any camp.” Savitri, quietly: “It could.” Correction 1: the fortress of killers a camp.
+Ferry I. Savitri tells of Ila’s sparrow, a broken wing she nursed for three nights. “It died anyway. She asked me why we fix things that die. I said, so they don’t die alone.” Rudra can say nothing, ask what Ila said, or apologize. Apologizing gets: “Save it. You will need it later, for someone who can use it.”
+10. Act II: The Drowned Lotus of Patala (debt to the living world)
+Place. Caverns under a sunken stepwell, flooded with violet Halahala from the Churning. The rivers of the world are dammed here. Only Savitri’s lantern shows what is real in the mist.
+Mini-boss: Madhu and Kaitabha. Twin asuras born from Vishnu’s ear-wax, who can only die by their own choice. Each revives the other unless you hit him within five seconds, and each kneels for one beat before a heavy attack, which is the only hit that counts. Kaitabha: “We were born from his ear. Ask him what he wanted us for.” Madhu: “He wanted us to die when he said.” The god is not clean. Both sides cheated, which doesn’t make forty thousand healers guilty.
+Boss: Vritra (Shard #2). In the myth, the sage Tvashta created him out of grief when Indra killed his son. He swallowed the world’s rivers, and Indra killed him with a vajra made from the bones of Dadhichi, a sage who gave his body willingly. Here his people, the Danava water-folk, served as cooks in the camp, and the Council told him their souls are in the shard.
+Vritra: “A father’s grief made me. What made you?”
+Phase 1: floods, rising waves, poison spouts. Phase 2: the drowned spill from his belly, helpless.
+The choice: carry the drowned to the lantern-lit shore one at a time under fire, or finish him fast. If saved, the rivers begin to run and the Vaitarani clears a little. If not, the river stays black. Neither is wrong, and both are remembered.
+He dies saying: “Dadhichi gave his bones freely. That was the only killing the gods ever got right.”
+Power unlocked: Vritra’s Tide.
+Shard #2 memory. The god’s calm face. Vishnu: “Rudra. Go and look.” Rudra hears it for the first time. Rudra: “He said it. Then why did he break me?” Savitri: “Ask him when you find him.” Correction 2: cursed by the god stopped by the god.
+Ferry II. Ila at ten, treating asura wounded in the same tent as gods: “A wound has no side.”
+11. Act III: The Forge of Vishwakarma (debt of labor and oaths)
+Place. A clockwork foundry in a hollowed volcano, built by the asura architect Maya and run by enslaved smiths. Everything is stamped with the spiral mark.
+Story. Rudra frees a crew of smiths and they reforge his mace. On its haft is a maker’s mark: the spiral. Rudra: “My father made this.” Savitri, not looking at him: “I know.” A foundry ledger on the wall, dated before the Night of Ash, reads: Shishira, eighteenth night, projected yield: 40,000. It was written before it happened.
+Mini-boss: Bhasmasura. In the myth, his touch burned anyone to ash, until Vishnu as Mohini danced and he copied her and burned himself. Here he’s the Council’s failed first vessel, able to burn souls loose but not hold them. He mirrors your moves with a half-second delay, and his touch is instant death. Savitri’s lantern projects a shadow of a dance. Follow it and he copies you until he burns himself. Savitri: “In the old story a woman danced and he copied her until he burned himself.” Rudra: “He was a weapon.” Savitri: “So were you.”
+Boss: Mahabali (Shard #3). The generous asura king who gave Vamana three steps of land. He is the master of the Forge, and Kaala-Chakra swore to free his people if he guarded the Furnace, and never did. Bali keeps his oath anyway and wants to lose.
+Bali: “I am a man who keeps his word. It is the only thing the Council could not take.” Rudra: “You swore it to a liar.” Bali: “I swore it to be a man who swore.”
+Phase 1: a pure duel, with armor that cuts normal damage by 70 percent, so you break his posture. Phase 2: he is killed once, rises again with a new weapon, and the arena shrinks. Phase 3: it shrinks again and he kneels.
+Bali: “Three steps. I gave two freely. The third is yours.” His death breaks the oath and the smiths’ chains fall.
+Power unlocked: The Third Step.
+Shard #3 memory. The pyre, the shroud, and his father’s hand on his wrist: “Please. Do not unwrap him.” Rudra lets go. Rudra: “I never lifted the shroud.” Correction 3: the war for heaven the harvest.
+Ferry III. Ila’s last letter said the Council had moved more families inside the walls “for protection.” She was proud of that. Saying “I’m sorry” now gets: “You said that.”
+12. Act IV: The Weeping Banyan of Dandaka (debt of truth)
+Place. A continent-sized banyan growing upside-down from the clouds, its roots dripping golden sap and trapped memories. Faces flicker in the roots: the dead of the Shishira.
+Story, the emotional collapse of the game. Among the faces Rudra stops at a girl of sixteen. Her jaw is Savitri’s.
+Rudra: “You knew.” Savitri: “From the first hour.” Rudra: “Why did you help me?” Savitri: “Because you are the only one who can get to the top of this mountain. And the top is where they are keeping her.”
+Rudra drops to one knee. “I will stop.” “No.” “I killed your child.” “Yes. Finish it.” He gets up.
+Sanjaya breaks: “I was given my words. I did not see the camp. I did not see the lights.” Correction 4: Rudra, the betrayed Rudra, who did not look.
+Mini-boss: Maricha. The golden deer rakshasa, here a two-headed stag with antlers of mirrors, teleporting across the glade. Only the lantern shows which is real.
+Boss: Surpanakha (Shard #4). In the myth, Ravana’s sister was mutilated after asking for love, and her anger started a war. Here she’s an ancient shape-shifting rakshasi who rules the dream-banyan. Her daughter died in the camp. She was promised the girl’s soul in the shard and doesn’t believe it, but she keeps it so no one else can use her daughter.
+Surpanakha: “You keep asking what the god did to you. Ask what you did to me.”
+Phase 1: she appears as a beautiful woman, then drops the disguise, and razor threads strung across the floor cut you until you sever the anchor spindles. Phase 2: shadow-clones of the Rudra of the Night of Ash fight with your exact weapons.
+She dies refusing absolution: “I don’t forgive you. Carry that. It is the only thing of mine you will ever keep.”
+Power unlocked: Maya-Chhaya, a shadow twin that fights beside you and mirrors your attacks. It is literally your guilt.
+Shard #4 memory. The night as it was: the hill, the lamps in a hundred windows, washing lines, a child’s toy by the gate. Young Rudra: “Father. Who is inside?” “Killers.” “I see lights.” “Watchfires.” A child laughs two hundred paces away. He does not walk down. Rudra: “I asked him.” Savitri: “You asked the wrong person.” Rudra: “I could have gone and looked. It was two hundred paces.”
+Ferry IV. Silent. They row together.
+13. Act V: The Celestial Court of Amaravati (debt of the divine)
+Place. A shattered floating palace above storm-clouds, with its gates sealed from inside. Rudra storms heaven for revenge. His rage becomes a power: his brow ignites and the faces of the camp’s dead flicker at the edges of the screen. Each use dims Savitri’s lantern.
+Mini-boss: Raktabeeja. In the Devi Mahatmya, every drop of his blood became another Raktabeeja. Here, every wound sends drops of blood to the floor, and each sprouts a clone with the same moves. Hitting harder only floods the arena. The answer is Rudra’s wound: hold Burn, and his brow flares and burns the blood pools before they hatch, at a cost in health. You can’t out-fight guilt. You have to burn it, and it hurts. In phase 3, pipes from the Furnace run into his body. Cut them. Savitri, quietly: “They are being burned again, aren’t they?” Every drop is another life to burn, so the forty thousand was only the start. He dies as a pool of ash.
+Boss: Shumbha and Nishumbha (Shards #5 and #6). The twin asura emperors who bought Kaala-Chakra with a throne. They took their shards by force. They feel nothing, which lets the player hate cleanly.
+Shumbha: “Your father is up the hill. He sold you cheap.” Nishumbha: “He watched the camp burn with wine in his hand.” Shumbha: “He did not even ask us to move the healers’ tents.”
+Rudra, stilled: “My father is alive.” Rudra: “Vishnu. Where is he?” Nishumbha: “We locked him out ages ago. He is on the other side of the gate, knocking.”
+Phase 1: both at once, with Shumbha at range firing freezing lunar chakrams and Nishumbha charging with a thunder-axe. Phase 2: when one falls, the other absorbs his twin’s corpse and both shards, fusing into a four-armed Tempest Sovereign who splits the arena with lightning and ice. The fusion isn’t grief. It’s possession, and Rudra recognizes the shape.
+Power unlocked: Rudra-Kopa Awakening, a full Rage Mode that launches twin lightning-and-fire waves.
+Shards #5 and #6 memory. The Council table, wine and laughter, the twins pointing at the burning camp. Kaala-Chakra stands very still, wine untouched. He is looking at one tent, the third from the east gate. Correction 5: Vishnu, who rules heaven Vishnu, who was locked out.
+Ferry V. The only crossing where Rudra speaks first. Rudra: “What was she like?” Savitri: “She hummed while she worked. She stole sweets for her patients. She would have liked to be angry at you. She was not built for it.” Then she takes a folded page from the base of her lantern, the one from the hub boat. It’s a column of numbers in a young man’s hand, and one line: The yield does not match the wounded. I will tell Rudra at dawn. She has carried it three thousand years and could not read the numbers. Rudra reads all of it, and does not look away. Savitri: “She would have wanted you to stay.”
+14. Act VI: The Soul Furnace (debt to family)
+Place. A cosmic lotus platform above a black-hole eclipse, ringed by grinding gears, with the Furnace at its heart.
+Mini-boss: Rahu. The severed head that drank Amrita, guarding the gate. The arena goes dark and the lantern is the only light. Rahu hunts it, so you protect the lantern, strike his neck-stump when he lunges, and in total eclipse fight by sound. Rahu: “A head that cannot die, begging to be finished. Does that look like a gift?” Rudra gives him the end he wants.
+The Hound of Doomsday. It can’t be killed. For three minutes the player survives its attack, and then it lowers its head and lies at his feet. Hound: “Not yet.”
+15. The Father
+Kaala-Chakra stands at the heart of the Furnace, alive, with his third eye burning.
+Kaala-Chakra: “Rudra. My son.” Rudra: “You fell. Vishnu killed you.” Kaala-Chakra: “He never touched me. Look.” The Furnace wall replays it: he falls before the god’s hand moves. Correction 6: his father fell to the god his father fell first.
+Rudra: “Forty thousand.” Kaala-Chakra: “And more, if it costs more. Your mother is in that stone, Rudra. She has been in it since the day you were born. I have been trying to get her out.”
+Kaala-Chakra: “Thank you for bringing them. The Mani rejoins only on its bearer. I needed you to climb.” Rudra, slowly: “I have been bringing you the pieces.” Kaala-Chakra: “Every one.”
+Then Rudra asks the first question he has asked in three thousand years: “Where was Nachiketa?” Kaala-Chakra: “In the third tent from the east gate. I chose it. He found the ledger. He would have told you, and you would have refused me.”
+Rudra: “And me?” Kaala-Chakra: “The Mani cannot leave your bone without taking you. You were always going to die. You were a vessel. I gave you a name so you would carry her carefully.” Rudra: “You killed your own son.” Kaala-Chakra: “For the one I could still save.”
+Kaala-Chakra: “A weapon does not ask, Rudra. You asked me once, that night. And you took my answer. That was all I needed.”
+The fight. He needs Rudra alive until the Mani is whole, so the first two phases fight to subdue, not kill.
+Phase 1, the Ascetic Guru (3,500 HP): telekinesis and eight orbiting golden chakrams.
+Phase 2, the Master of Astras (4,500 HP): a celestial bow, meteor storms, clone archers, rotating laser mandalas.
+Phase 3, Vishwarupa Kalantaka (6,000 HP): a six-armed, ten-headed time-eater with a halo of golden skulls, white fire on the outer ring, four-hit teleport chains, and a rewind that undoes his wounds unless you break his posture.
+When the Furnace cracks, the souls rise, and a young man’s voice says: “Father.” Kaala-Chakra doesn’t weep. He tries to pull the soul back into the Furnace, like a lamp left burning in the wrong room. “Not yet. I have not finished.”
+Rudra breaks the last posture bar, leaps onto his father’s chest, and tears the seventh shard from his third eye. The seven shards fuse in his fist. The Mani is whole, warm, and humming a lullaby. Kaala-Chakra, bleeding: “Put it in. One word, and she lives. If you kill me the sky falls.” Rudra: “Then let it.”
+16. The choice
+The gem holds every soul he burned and the mother he never met. It can bring her back, but only by using all of them up. It can free them all, but only by letting her go. Savitri, from the edge of the room: “Don’t do it for me.” The game waits with no timer.
+Hold to crush. Release to complete the rite.
+17. Ending One: The Vow
+Rudra crushes the Mani. The souls rise through the broken ceiling into a sky that hasn’t moved in three thousand years: Ila and Nachiketa standing together, Vrikodara’s wife and son with a lamp, and Vritra’s river-folk if he saved them. Then a woman’s voice, the first time Rudra has heard it. Suvarna: “Rudra. I gave you my life so you could hold the world. You held it. Now let it go.”
+She rises with the rest. Kaala-Chakra watches her go and reaches, and there’s nothing to hold. “I was going to build a world with no endings.” He turns to dust, and the Furnace goes dark. The gates of heaven grind open and the Preserver walks in and says nothing.
+The Descent. Rudra walks down the mountain through every place he fought, with the Hound beside him. Each place shows what the player did: Vritra’s river flowing or dry, the smiths walking free, a sparrow on a chariot wheel.
+At the foot, the river. Savitri: “The question. Will you still be here?” Rudra: “Yes.” The river pays her at last. She ages every year she was owed in one breath, steps into the boat, and the lantern goes out in her hands. “Ila.” Across the water, a girl laughs. She crosses.
+The two hundred paces. The sun rises for the first time in three thousand years. The Look button is open now, and the burned hill is no longer a wall. The Preserver waits at the crest and does not follow. Vishnu: “I told you to go and look.” Rudra: “I know.” Rudra walks down alone, past the lamps in the ash, to the third tent from the east gate. There’s only a charred stake, and a sparrow lands on it. If the player looked at what the game offered, its wing is bandaged.
+Rudra kneels with his father’s mace across his knees. The curse is broken, so staying alive is now his choice. He stays. Sanjaya, uncorrected: “Let it be written that he was not wronged. He was forgiven, and he was not let off. And he stayed.” Then Sanjaya reads the names, all forty thousand, over the credits.
+18. Ending Two: The Sovereign
+Rudra speaks the word. The souls burn one last time, white and silent, and a woman steps out of the light, whole, reaching for his face. His mother, alive. She looks past his shoulder at the Furnace, at the thousands of empty lamps, and understands the cost. Suvarna: “Rudra. What did you pay?” Rudra: “Nothing that mattered.” She never speaks again.
+The Furnace relights, because a woman raised by the Sanjivani must be fed, and Rudra sits on his father’s throne. When he speaks, it’s in his father’s voice: “No more endings.” Far below on a frozen river, a ferrywoman’s lantern goes out. At the sealed gate of heaven, a figure in light knocks once, twice, and falls silent. Sanjaya: “There is a man on the mountain who cannot die...”
+19. What the game remembers
+looks: enough Looks give the sparrow a bandaged wing in the final shot.
+vritra_saved: lights on the river in later ferries and in the Descent.
+ferry_listened: if you never skipped a ferry scene, Ila’s laugh is clear in the Vow ending.
+deaths: only change the lantern’s light and Savitri’s voice, never a penalty.
+final_choice: Vow or Sovereign.
+20. Sanjaya’s seven corrections
+the fortress of killers a camp
+cursed by the god stopped by the god
+the war for heaven the harvest
+Rudra, the betrayed Rudra, who did not look
+Vishnu, who rules heaven Vishnu, who was locked out
+his father fell to the god his father fell first
+The final line, uncorrected
+21. The vertical slice (build this now)
+In: the five-scroll prologue, the four-scene opening, the hub with the lantern in three light states, Act I, Dundubhi, Vrikodara, Shard #1, correction 1, and Ferry I. Out: Acts II to VI, the other ten bosses, and the ending.
+Planted early so they pay off later: the spiral mark on drum skin and tally-leaves, the Yield column, the folded page on the boat, Savitri’s question, and the sparrow.
+22. Rules to protect
+Every boss mirrors Rudra, and every death is different: forgive, refuse, release, honor, possess.
+Nobody is a villain for fun.
+The gods cheated too, but that never excuses the camp.
+Power always costs something visible.
+The player is never told what to feel.
+The last line belongs to the truth.
+23. Decisions (locked)
+Suvarna stays inside the Mani. It is Kaala-Chakra’s real motive and the ending’s real temptation.
+Public build uses “the Preserver” for Vishnu. This script keeps the name Vishnu for now.
+Savitri and Ila stay. They are the emotional spine.
+Vrikodara keeps his name in the slice and can be renamed later.
+The roster is confirmed: Vritra, Mahabali, Raktabeeja, and Rahu, with the rest as listed.
+Continuity fix: Suvarna died at Rudra’s birth, so Nachiketa is Rudra’s older brother. He knew her, and he taught her lullaby to the healers of the camp. That tune runs through the game.
+24. Full Scripts: Acts II to VI
+Same format as Act I. Bold is a speaker, italic is direction, strikethrough is Sanjaya being corrected. The lullaby is Suvarna’s tune. Nachiketa taught it to the camp’s healers, and Ila hummed it.
+Act II script: The Drowned Lotus of Patala
+Arrival. The ferry noses into a stepwell, ninety black steps going down into water that does not move. The lantern dims. Dripping, echoes, the sound of a river with nowhere to go.
+SAVITRI: My river starts down here. It has never once reached me clean. Three thousand years.
+RUDRA: Something is holding it.
+SAVITRI: Something is swallowing it. Stay in the light.
+As Rudra steps off the boat, the empty hollow in his brow hums a thin, wordless tune. He stops. Savitri says nothing.
+Look objects. A child’s wooden boat caught in a grate. A kitchen ladle stamped with the spiral mark, hung beside a cauldron big enough for a thousand. A water-stained ledger page: Shishira, water-bearers, two hundred and twelve Danava.
+Lantern lines while exploring.
+SAVITRI: That is not a wall. Wait. (The lantern reveals a ledge hidden in the mist.)
+SAVITRI: Don’t drink. Not that one either.
+SAVITRI: Every river I ever crossed was alive. This one is just waiting.
+Madhu and Kaitabha (intro). Two figures sit on a broken pillar, sharing a meal. They stand lazily, like men who have done this before.
+MADHU: The Undying One. They said you’d come, and not to be late.
+KAITABHA: We were born from his ear, you know. Wax. A god’s sleep.
+RUDRA: Stand aside.
+MADHU: We cannot die unless we choose. He gave us that, and then he tricked us out of it.
+KAITABHA: Fight us anyway. We’re bored.
+In the fight, one kneels for a beat, and the other says “Now, brother.” When both are at their last health, a new prompt appears for the first time in the game: Ask.
+RUDRA: (to the twins) Do you want this?
+MADHU: (a pause) Nobody has asked us that.
+KAITABHA: We choose. Thank you for asking.
+They kneel together and die by their own choice. If the player skips Ask and strikes, they die with a shrug: “The god’s trick, again.”
+Vritra (intro). The stepwell opens onto a drowned temple the size of a city. A coiled mountain of serpent shifts in the dark. The whole room is a belly of water. His voice is slow and tired.
+VRITRA: I know your face. The Council showed me when they gave me the stone. They said the Undying One would come to burn me.
+RUDRA: Where are your people?
+VRITRA: In the stone. That is what they told me.
+SAVITRI: (low) He believes it.
+RUDRA: I’m sorry.
+VRITRA: Don’t. You’ll waste it on me.
+Phase 2 begins as the drowned spill from his belly. Voices in the water: “Please.” “I can’t see.” “Mother?”
+VRITRA: I swallowed every river in the world, and not one of them was mine.
+The player chooses: carry the drowned out under fire, or finish him fast.
+If saved.
+VRITRA: You carry them? Why?
+RUDRA: Because once I didn’t look.
+VRITRA: Then take it. Take it before I remember how to hold it.
+He gives up the shard willingly. A thread of current moves through the black water.
+VRITRA: Dadhichi gave his bones freely. That was the only killing the gods ever got right.
+If not saved. He dies angry. VRITRA: More dead for your count.
+Shard #2 memory. The duel, from the god’s side for the first time. Vishnu stands over Rudra in the white fire. His hands are open. They are not raised against him.
+VISHNU (memory): Rudra. Go and look.
+RUDRA: His hands were open.
+SAVITRI: Gods don’t usually open them.
+SANJAYA: Cursed by the god. Stopped by the god.
+Humming. If Vritra was saved, the shard hums the lullaby near the new current. Savitri hears it and turns her face away.
+Ferry II. SAVITRI: When Ila was ten, the healers would not treat asura wounded in the same tent as gods. She did it anyway. She said a wound has no side.
+Say nothing. SAVITRI: She was braver than I was.
+Ask: “Did they punish her?” SAVITRI: They tried. She was too useful.
+Say: “She sounds good.” SAVITRI: She was.
+If Vritra was saved, she looks at the water. SAVITRI: It’s moving. After three thousand years.
+Act III script: The Forge of Vishwakarma
+Arrival. The river ends at a wall of rock and a staircase of iron. Heat, noise, blue smoke. Chains hang from every rail. Smiths work in rows, heads down, hands burnt past feeling.
+Savitri. SAVITRI: Don’t talk to them. They’ll ask who sent you.
+RUDRA: Who sent me?
+SAVITRI: Nobody. That’s why they’ll want to know.
+Look objects. A foundry ledger on a wall: Shishira, eighteenth night, projected yield: 40,000. A wall scratched with three thousand years of tally marks, one per day. A half-finished flying chariot, the wing stamped with the spiral.
+The foreman. An old smith, burnt and bent, stares at Rudra’s broken mace.
+FOREMAN: We can mend that. They told us the Undying One carries our tithe. We thought it was a story.
+Rudra breaks the chains of a crew with his hands. They reforge the mace. On its haft, a mark.
+RUDRA: My father made this.
+SAVITRI: (not looking at him) I know.
+Bhasmasura (intro). Down a side shaft, a cage of cooling ash. A figure curls inside it, skin cracked like a kiln.
+BHASMASURA: Again? Do I do it again?
+RUDRA: Who are you?
+BHASMASURA: Who are you? Who are you?
+SAVITRI: He’s repeating you.
+He rises. Everything Rudra says, he says back, a half-beat late. When Rudra moves, he moves. His fingertips glow.
+BHASMASURA: Where are they? Where are they?
+RUDRA: (quietly) I don’t know.
+The lantern throws the shadow of a dance onto the floor. Savitri points.
+SAVITRI: In the old story, a woman danced. He copied her until he burned himself. Follow the light.
+Rudra dances. Bhasmasura follows. At the last step, the mimic’s hand rises to his own brow.
+BHASMASURA: Oh. (a long breath) Oh, it’s quiet now.
+He burns to ash. The cage is empty.
+RUDRA: He was a weapon.
+SAVITRI: So were you.
+Mahabali (intro). The Furnace gate. A throne of the Council stands empty. At its foot, on the bare floor, sits an enormous man in plain cloth, a sword across his knees. He rises.
+BALI: Rudra. I have waited.
+RUDRA: You hold a shard.
+BALI: I hold an oath. The shard is how they keep me to it.
+RUDRA: To what?
+BALI: I swore to guard the Furnace, and they swore to free my people. Look around you.
+RUDRA: You swore it to a liar.
+BALI: I swore it to be a man who swore. It is the only thing the Council could not take.
+Phase 1: pure duel. Armor cuts normal damage by 70 percent, so Rudra breaks his posture. At half health Bali falls, and rises again from the Sanjivani: a new weapon in each hand.
+BALI: That is one step. (the arena shrinks) That is two.
+Phase 3: the arena shrinks again. Bali lowers both weapons and kneels.
+BALI: Three steps. I gave two freely. The third is yours.
+RUDRA: (kneeling beside him) I can take your people out of here.
+BALI: Then take them. But first, tell them the oath is over. Let them be free of me, too.
+Rudra strikes. The oath breaks. Chains fall from every smith across the Forge, one after another, like a wave.
+Shard #3 memory. The pyre. A shrouded body. Young Rudra reaches for the cloth. His father’s hand closes on his wrist.
+KAALA-CHAKRA (memory): Please. Do not unwrap him. Remember him as he was.
+Rudra lets go.
+RUDRA: I never lifted the shroud.
+SANJAYA: The war for heaven. The harvest.
+Ferry III. SAVITRI: Ila wrote me letters from the camp. The last one said the Council had moved more families inside the walls. For our protection, they said. She was proud of that. She thought it meant they cared.
+Say nothing. The river runs on.
+Ask: “When did it arrive?” SAVITRI: The week before.
+Say: “I’m sorry.” SAVITRI: You said that.
+Act IV script: The Weeping Banyan of Dandaka
+Arrival. The river carries them up into the roots of an enormous tree that hangs from the clouds. Golden sap drips like slow rain. In every root, a face: sleeping, smiling, lost.
+SAVITRI: Don’t touch them. They’re dreaming, and they don’t want to wake.
+The reveal. Rudra stops at a root. A girl of sixteen, a healer’s apprentice, a scrap of cloth in her hair. Her jaw is Savitri’s.
+RUDRA: (turning) Savitri.
+She does not move.
+RUDRA: You knew.
+SAVITRI: From the first hour.
+RUDRA: Why did you help me?
+SAVITRI: Because you are the only one who can get to the top of this mountain. And the top is where they are keeping her.
+Rudra draws his mace. Lowers it. Falls to one knee.
+RUDRA: I will stop. I will not climb.
+SAVITRI: No.
+RUDRA: I killed your child.
+SAVITRI: Yes. Finish it.
+Long silence. He gets up. Neither speaks.
+Sanjaya breaks.
+SANJAYA: I must stop. I was given my words. I did not see the camp. I did not see the lights. I told you what the Council showed me.
+His narration burns off the screen.
+SANJAYA: Rudra, the betrayed. Rudra, who did not look.
+Maricha. A golden stag steps out of the roots. Two heads, antlers of mirrors. It teleports, doubling and tripling, until the glade holds a dozen of him. Only the lantern shows which is real.
+MARICHA: (one head) She said you’d come.
+MARICHA: (the other) She said to keep you busy.
+He dies in a spray of mirror shards, and the glade goes quiet.
+Surpanakha (intro). Among the roots, a beautiful woman sits weaving thread on a loom of light. She does not look up.
+SURPANAKHA: You keep asking what the god did to you. Ask what you did to me.
+She stands. As she does, the beauty falls away like a veil. Her face is mutilated, scarred, ancient.
+SURPANAKHA: My daughter was in the third tent from the east gate. Did you know that? Of course not. You did not ask.
+Phase 1: razor threads cross the floor. Sever the anchor spindles to dash safely. Phase 2: shadow-clones of the Rudra of the Night of Ash rise from the floor. Their faces are blank. They carry Rudra’s own weapons.
+SURPANAKHA: Fight yourself. That is all you have ever done.
+She dies.
+SURPANAKHA: I don’t forgive you. Carry that. It is the only thing of mine you will ever keep.
+Shard #4 memory. The night as it was. A hill. A citadel. Hundreds of small lights on the battlements. Washing lines. A child’s toy by the gate. Young Rudra, the sky bending above him, and Kaala-Chakra beside him.
+RUDRA (memory): Father. Who is inside?
+KAALA-CHAKRA (memory): Killers.
+RUDRA (memory): I see lights.
+KAALA-CHAKRA (memory): Watchfires.
+Two hundred paces down the hill, a child laughs. Rudra does not walk down. He raises his hands. The memory ends.
+RUDRA: I asked him.
+SAVITRI: You asked the wrong person.
+RUDRA: I could have gone and looked. It was two hundred paces.
+Savitri says nothing.
+Ferry IV. Silent. Savitri rows. After a while, Rudra takes the second oar. Neither speaks for the length of the river. The only sound is the water.
+Act V script: The Celestial Court of Amaravati
+Arrival. The river rises into the clouds. Ahead, a palace of white marble and gold, split down the middle, lit by purple lightning. The gates are sealed from the inside.
+SANJAYA: Vishnu, who rules heaven. (he stops mid-sentence, uncertain) ...who sits somewhere inside.
+Rage. At the broken gate, the first apsara-assassins attack. Rudra’s brow ignites. The faces of the camp flicker at the edges of the screen. The lantern dims.
+SAVITRI: (quietly) Every time you do that, it costs me.
+RUDRA: Then I’ll stop.
+SAVITRI: You can’t. That’s what frightens me.
+Raktabeeja (intro). A blood-red arena beneath the palace, fed by pipes that run down into the dark. A massive man in dark armor stands in the center, wounds still closing on him.
+RAKTABEEJA: They told me I could not be killed. They did not tell me why.
+RUDRA: Why?
+RAKTABEEJA: Because every time I bleed, someone else gets burned.
+The first hit: a drop falls. It sprouts a copy. Three hits and the arena is full of him.
+SAVITRI: Burn it, Rudra. Before it falls.
+The Burn prompt appears. The first time Rudra uses it, his brow flares and the blood-drops hiss. It hurts.
+SAVITRI: (low) It hurts you.
+RUDRA: Good.
+Phase 3: the pipes. Rudra cuts them one by one.
+SAVITRI: They are being burned again, aren’t they?
+RAKTABEEJA: Over and over. That was the plan. The forty thousand were only the first batch.
+He dies as a pool of ash.
+RUDRA: Then it isn’t over.
+The Grand Sabha (twins). A hall of thrones. On the two highest sit Shumbha, in frost-armor, and Nishumbha, wreathed in lightning. They do not stand.
+SHUMBHA: Your father is up the hill. He sold you cheap.
+NISHUMBHA: We bought him with a throne. He watched the camp burn with wine in his hand.
+SHUMBHA: He did not even ask us to move the healers’ tents.
+RUDRA: (stilled) My father is alive.
+NISHUMBHA: Alive and well.
+RUDRA: Vishnu. Where is he?
+NISHUMBHA: Your god? We locked him out ages ago. He is on the other side of the gate, knocking.
+Phase 1: both at once. Shumbha fires freezing chakrams from range. Nishumbha charges with a thunder-axe. When one falls, the other screams.
+SHUMBHA: (to the corpse) Don’t. Don’t. You are not allowed to go.
+He takes his twin’s body into his own and rises as a four-armed Tempest Sovereign, splitting the arena with a wall of lightning and ice.
+RUDRA: (watching, quietly) I know that voice.
+He kills the Sovereign. The twin shards drop into his hand.
+Shards #5 and #6 memory. The Council table. Wine, laughter, the twins pointing at the burning camp below. Kaala-Chakra stands very still, wine untouched. He is not looking at the fire. He is looking at one tent.
+RUDRA: Why is he looking at that tent?
+SAVITRI: I never knew.
+SANJAYA: Vishnu, who rules heaven. Vishnu, who was locked out.
+Ferry V. The only crossing where Rudra speaks first.
+RUDRA: What was she like?
+Savitri does not answer for a long moment. She starts to hum, then stops.
+SAVITRI: She hummed while she worked. She stole sweets for her patients. She would have liked to be angry at you. She was not built for it.
+The lullaby from the shard answers her hum, faint. They both go still.
+RUDRA: That tune.
+SAVITRI: The healers all knew it. I never found out where it came from.
+She reaches into the base of her lantern and takes out a folded page, the one from the hub boat.
+SAVITRI: It was in her last letter. A column of numbers, and one line in a young man’s hand. I have carried it three thousand years. I could not read the numbers. I could read the last line.
+The page: The yield does not match the wounded. I will tell Rudra at dawn. Rudra reads all of it. He does not look away.
+RUDRA: Nachiketa.
+SAVITRI: Your brother. She wrote he was kind to her.
+RUDRA: He was kind to everyone.
+SAVITRI: She would have wanted you to stay.
+Act VI script: The Soul Furnace
+Arrival. The river rises past the clouds into a sky that is not a sky: a cosmic lotus above a black hole. Gears the size of mountains grind overhead. The lantern is almost out.
+Rahu. At the threshold, the light goes. Total dark, except for the lantern. A voice, enormous and tired, from everywhere.
+RAHU: A little flame. How long since I saw one.
+Rahu’s head, severed, sails out of the dark and tries to swallow the lantern. The player keeps it alive: stand in its light, strike his neck-stump when he lunges. In phase 2, the eclipse: total darkness. Fight by sound.
+RAHU: A head that cannot die, begging to be finished. Does that look like a gift?
+Rudra gives him the end he wants. The light returns.
+The Hound. At the threshold of the Furnace, a shadow with eyes. It does not speak. It attacks. For three minutes the player survives, unable to harm it. Then it stops, lowers its head, and lies at his feet.
+HOUND: Not yet.
+The corridor. Before the Furnace chamber, a long hall lined with lamps: forty thousand, one beside each of the souls in the walls. Each flickers. Rudra walks past them. Some he recognizes.
+SAVITRI: (stopping at the door) I’ll wait here.
+RUDRA: You should come.
+SAVITRI: I’ll be here.
+RUDRA: That’s my line.
+SAVITRI: Then you’d better live up to it.
+The Father. The Furnace chamber. Machines of gears and burning souls. At its centre, alive and ancient, third eye burning, stands Kaala-Chakra.
+KAALA-CHAKRA: Rudra. My son.
+RUDRA: You fell. Vishnu killed you.
+KAALA-CHAKRA: He never touched me. Look.
+The Furnace wall replays it. His father falls. The Preserver’s hand has not yet moved.
+SANJAYA: His father fell to the god. His father fell first.
+RUDRA: Forty thousand.
+KAALA-CHAKRA: And more, if it costs more. Your mother is in that stone, Rudra. She has been in it since the day you were born. I have been trying to get her out.
+Rudra’s hand goes to the empty hollow in his brow.
+KAALA-CHAKRA: Thank you for bringing them. The Mani rejoins only on its bearer. I needed you to climb.
+RUDRA: (slowly) I have been bringing you the pieces.
+KAALA-CHAKRA: Every one.
+Then Rudra asks the first question he has asked in three thousand years.
+RUDRA: Where was Nachiketa?
+KAALA-CHAKRA: (cold, truthful) In the third tent from the east gate. I chose it. He found the ledger. He would have told you, and you would have refused me. I could not let you refuse.
+RUDRA: And me?
+KAALA-CHAKRA: The Mani cannot leave your bone without taking you. You were always going to die. You were a vessel. I gave you a name so you would carry her carefully.
+RUDRA: You killed your own son.
+KAALA-CHAKRA: For the one I could still save.
+KAALA-CHAKRA: A weapon does not ask, Rudra. You asked me once, that night. And you took my answer. That was all I needed.
+The fight, in three forms, as written in section 15. When the Furnace cracks and the souls rise, a young man’s voice.
+NACHIKETA (V.O.): Father.
+Kaala-Chakra does not weep. He reaches out and tries to pull the soul back into the Furnace, like a lamp left burning in the wrong room.
+KAALA-CHAKRA: Not yet. I have not finished.
+Rudra breaks the final posture bar, leaps onto his father’s chest, and tears the seventh shard from his third eye. The seven shards fuse in his fist. The Mani is whole, and it hums the lullaby.
+KAALA-CHAKRA: (bleeding, reaching) Put it in. One word, and she lives. If you kill me the sky falls.
+RUDRA: Then let it.
+The choice follows (section 16). At the door, Savitri’s lantern burns low. She says only:
+SAVITRI: Don’t do it for me.
+The Vow, last scene. At the third tent, the sparrow lands on the charred stake. Rudra hums the lullaby. He does not know where he learned it.
+Part Two: The Game
+25. The Game at a Glance
+
+
+
+
+Title
+Kaliyuga: The Bleeding Crown
+Genre
+Story-driven action roguelike with boss-focused combat
+Perspective
+Isometric 3D, third-person feel, fixed arenas
+Platform
+PC (browser first), keyboard and gamepad
+Players
+Single player
+Length
+Slice: 30 to 60 minutes. Full game: about 12 to 15 hours
+Tone
+Grief, guilt, restraint. Mythic, never glorifying
+Rating target
+Mature (violence, massacre, themes of grief and loss)
+Comparable games
+Hades (loop and hub), God of War (relationship and restraint), Black Myth: Wukong (boss mythology), Sekiro (posture)
+
+26. The Pitch and the Store Description
+One line. An undying warrior who burned a camp of forty thousand because he never asked a question climbs a mountain of gods with the mother of a girl he killed.
+Short description. Three thousand years ago, Rudra burned forty thousand people on his father’s word. Now he climbs Mount Meru, boss by boss, guided by a ferrywoman whose daughter he killed. Every boss is an asura from Hindu myth, every shard is a memory, and every answer costs her light.
+Long description. Kaliyuga: The Bleeding Crown is an action roguelike about the cost of not looking. You play Rudra, born with the power of the gods in his brow and raised never to question an order. After the Night of Ash, the god Vishnu tears the gem from his skull and he falls into the river of the dead, unable to die. Three thousand years later, the ferrywoman Savitri hauls him out. She knows what he did, and she needs him anyway.
+Fight through six realms of Mount Meru, from a battlefield of the unburied to a furnace that burns souls for light. Each realm is guarded by an asura or rakshasa taken from the myths: Raktabeeja, whose every drop of blood becomes a new enemy, Vritra, who swallowed the world’s rivers, Mahabali, the generous king who keeps an oath to a liar. Every boss mirrors something Rudra refuses to see. Every shard you take returns one true memory of the night, and the narrator’s words are crossed out on screen as the truth replaces them.
+At the top waits your father, and a choice with no timer.
+Key features.
+Twelve boss fights built from Hindu myth, each with a mechanic that teaches something about the story.
+A two-person story told on a ferry between fights: Rudra and Savitri, a lantern, and a few lines.
+A narrator who lies, and a screen that corrects him.
+A Look button, and a story that rewards using it.
+Two endings decided by one choice, and a final walk you earn.
+27. Design Pillars
+Look. The game rewards attention. Story details are visible, optional, and never explained. The player assembles the truth.
+Every boss is a mirror. A fight teaches the player something about Rudra by making them do it: Raktabeeja is guilt you have to burn, Bhasmasura is a weapon that copies you.
+Power costs something visible. Rage dims the lantern. Burn hurts. Nothing is free, and the player sees the price.
+Restraint. The loudest horror is shown once. The most important scenes are two people in a boat.
+The player is never told what to feel. The story shows a lamp and a tent and lets the player look.
+28. Core Loop and Structure
+Run loop. Enter a realm from the hub, fight through arenas of ordinary enemies, face the mini-boss, then the Warden. Die and you wake in Savitri’s boat, lantern dimmer, with a short scene. Win and you take the shard, watch its memory, and cross the river.
+Between fights. Collect Look threads, pick a boon between arenas, spend Ashen Karma at the shrine in the hub.
+Hub. The Vaitarani boat. A place to rest, talk, and Look. Savitri’s lines change with the lantern’s light and with what Rudra has seen. Three light states: warm, dim, cool.
+Act structure (each of six acts).
+Arrival scene on the river.
+Three to four combat arenas with Look objects.
+A mini-boss.
+The Warden boss, with a mid-fight choice or twist.
+A shard memory scene and a Sanjaya correction.
+A ferry scene.
+29. Combat Design
+Base weapon. The broken Gada, reforged in Act III into a full mace. This is both a story beat and the game’s first big weapon upgrade.
+Core moves.
+Light and heavy attacks. Combos scale in damage with each step and with Focus orbs.
+Three stances that cycle in a fixed order (smash, pillar, thrust). Each changes heavy attack shape: a cone cleave, a shockwave, a forward thrust.
+Dash. Costs stamina, travels a short corridor, and has invulnerability frames. Dash discipline matters.
+Posture. Every boss has a posture bar. Fill it to break armor and open a punish window. The Warden fights teach this.
+Look. One button. Not a combat move, but it pauses nothing: using it in a fight is a risk.
+Act-specific powers.
+Act
+Power
+What it does
+I
+Rakshasa Crushing Stance
+Heavy attacks send molten fissures forward
+II
+Vritra’s Tide
+Dash leaves a water wake that douses fire and slows enemies
+III
+The Third Step
+A stomp that sends a shockwave, plus a parry that returns damage
+IV
+Maya-Chhaya
+A shadow twin fights beside you and mirrors your attacks
+V
+Rudra-Kopa and Burn
+Rage Mode with twin lightning-and-fire waves, and a Burn that clears blood pools at a cost in health
+VI
+The Mani
+No new power. The final choice is the reward
+
+Boss rules.
+Phase 1 teaches the mechanic. Phase 2 twists it. A third beat, when it exists, ends it.
+Each fight has one rule the player must discover (pillar-baiting, mirroring a dance, burning the blood).
+Death scenes are never the same: forgive, refuse, release, honor, possess.
+Mini-bosses are shorter and teach one new idea.
+30. Progression
+Boons. After each arena the player picks one of three boons. They stack and change the run: damage, dash, stance, and elemental effects. The boon names should be rewritten as asura-flavored gifts (a boon from Madhu, a boon from Raktabeeja) to match the mythology. [ADDED]
+Shrine upgrades. Six permanent upgrades bought with Ashen Karma in the hub, each with a max rank. Karma is earned in runs and kept on death.
+Ashen Karma. The currency of guilt. Earned by killing and by Looking. It can be spent at the shrine. The name is a story pun: the thing you burned is the thing that buys you power.
+Story progression. Every shard returns a memory. Every act unlocks a power and a Sanjaya correction. These cannot be skipped, and they are the real progression.
+31. Story Systems
+Look. One interact button on any story object. Looks are optional and add a thread: a line in the codex, a change in Savitri’s dialogue, and a count toward the final shot. On the flashback hill, Look does nothing. In the Vow ending, it opens.
+The Ferry. Between acts, a conversation with three choices. None are wrong. Some unlock a deeper line. Silence is always an option and is never punished.
+Sanjaya’s corrections. The narrator’s subtitle appears, is struck through, and is rewritten in real time. There are seven.
+The lantern. Death dims it. Rage dims it. The state changes Savitri’s voice and the hub’s color. It never changes difficulty.
+Flags. looks, vritra_saved, ferry_listened, deaths, final_choice. They change cutscene details and the last shot, never the plot.
+32. Enemies and World
+Act
+Environment
+Ordinary enemies
+Hazard
+I
+Charnel Plains: rusted chariots, bone mountains, pyres
+Vetala (revenant soldiers), Preta (hungry ghosts)
+Ash-storms that cut vision
+II
+Patala: flooded stepwell, violet poison
+Danava river-folk twisted by poison, Halahala slimes
+Rising water, poison pools
+III
+The Forge: clockwork foundry in a volcano
+Yantra automata, forge-wraiths, Kinkara guards
+Moving platforms, molten channels
+IV
+The Weeping Banyan: upside-down tree, golden sap
+Dream-spirits, root-wraiths, Apsara illusions
+False paths, mirrored rooms
+V
+Amaravati: floating palace, purple lightning
+Apsara-assassins, Gandharva archers, Airavata constructs
+Lightning strikes, shrinking platforms
+VI
+The Furnace: cosmic lotus, black-hole eclipse
+Soul-lamp wardens, time-wraiths
+Light-eating darkness
+
+33. Controls and UI
+PC. WASD to move, mouse or keys to aim and attack, Space to dash, Q or Tab to switch stance, E to Look, F to Burn (Act V), Esc to pause. Fully remappable.
+Gamepad. Left stick move, face buttons for light and heavy, bumper for stance, trigger for dash, a dedicated button for Look. Treat gamepad as a first-class input.
+HUD. Health, stamina, posture bar (bosses), stance indicator, and the lantern in a corner, so the player always sees Savitri’s light. No quest markers.
+Accessibility.
+Subtitles on by default, with speaker names and strikethrough preserved.
+Look can be toggle or hold.
+A “Story” difficulty with more health and wider dash windows, so no one is blocked from the ending.
+Color-safe posture and telegraph colors.
+No flashing during the Brahmashira scene without a warning.
+34. Art Direction
+Prologue. Painted scroll panels with rough brushwork, dark gold and ash, as if illustrated for a temple wall. Sanjaya’s voice over the paint.
+In-game. Stylized, painterly 3D with strong silhouettes. Rudra is a broad figure with a furnace in his brow that glows and dims with his state.
+Palette by act. I: ash-grey and ochre. II: violet and teal. III: forge-orange and blue-black. IV: gold and green twilight. V: white and storm-purple. VI: black and gold.
+Light rule. Savitri’s lantern is the only warm light in the game, apart from fire. When it dims the world goes cool.
+Boss design. Each boss has one readable silhouette and one signature visual detail from the myth (Vritra’s river-belly, Raktabeeja’s blood-drops).
+Respect. Draw the mythology the way it is told: with care, not as spectacle. Deities are never mocked.
+35. Audio and Music
+The lullaby. Suvarna’s tune. Solo female voice or sarangi. It appears in the Mani’s hum, in Ila’s humming, and in the final walk. It is never played in full until the end.
+The drum. Dundubhi’s war-drum is the first thing the player hears and the last thing the Council used to call the families. Its rhythm recurs corrupted and slow in the Furnace.
+The ferry. A tanpura drone, water, and silence. Almost no music, so the voices carry.
+Look moments. No music. Only room tone and the object.
+Boss themes. One instrument per boss from Indian tradition: conch, ghatam, rudra veena, mridangam.
+Voice. Rudra, Savitri, Sanjaya, and Kaala-Chakra are fully voiced. Others can be partial. Dialogue must be recorded cleanly, because the ferry scenes depend on it.
+36. Technical Notes
+Current state. Next.js 15, React 19, Three.js, TypeScript strict. Type-check and tests pass. The logic is separated from rendering and unit-tested.
+Before sharing the slice. Compress images to WebP, compress models, and lazy-load by act. The initial download should be under about 80 MB. Move binaries to Git LFS.
+Refactor. Split the 6,500-line arena component into combat, AI, rendering, and HUD modules before adding Acts II to VI.
+Clean-up. Rename the leftover Wukong-era identifiers (jingu_bang, nezha_*, xuemo), fix the hardcoded local paths in the Python scripts, upgrade Next to a patched version, and update the README.
+Target. 60 fps on a mid-range laptop in a browser, at 1080p.
+Platform. PC first. Mobile only if the slice shows demand, and it would need a redesigned control scheme.
+37. Scope and Roadmap
+Milestone
+Content
+Done when
+Slice
+Prologue, opening, hub, Act I, Dundubhi, Vrikodara, Ferry I
+Plays start to finish, loads fast, one strikethrough lands
+2
+Act II: Madhu and Kaitabha, Vritra, the Ask prompt, the choice
+Choice changes the river
+3
+Act III: Bhasmasura, Mahabali, the reforged mace
+The mimic fight works
+4
+Act IV: Maricha, Surpanakha, the Savitri reveal
+The reveal scene is voiced
+5
+Act V: Raktabeeja, the twins, Rage and Burn
+Burn mechanic readable
+6
+Act VI: Rahu, the Hound, Kaala-Chakra, both endings
+Both endings playable
+
+Build one milestone at a time and release each as an update. The story is built so each act stands alone as a short experience.
+38. Risks and Mitigations
+Religious sensitivity. Use “the Preserver” in the public build. Treat the sources with care. Ask a reader familiar with the myths to check the script.
+Scope. Twelve bosses is a lot for a solo builder. Ship the slice, get feedback, and let the response decide the order.
+Combat feel. The story can only be as good as the fights. Play it and fix the worst moments before adding anything.
+Asset weight. Compress now, or the game will not load for most players.
+Systems versus story. The lantern, Look, and corrections are what make this game different. If they are cut for time, the game becomes a generic roguelike.
+Burnout. Finish a slice of each act rather than perfecting one.
+39. Content and Cultural Notes
+The gods cheated first, and the asuras answered with centuries of killing. Neither side is clean, which is the point.
+Rakshasas and asuras are treated as people with grievances, not as a racial caricature.
+The Samudra Manthan, the Devi Mahatmya, the Ramayana, and the Puranas are the sources. Bosses are adapted, not copied.
+Rudra’s crime is never excused, and the story never asks the player to cheer for the massacre.
+40. Glossary
+Mani. The gem in Rudra’s brow. It holds the gods’ power and, secretly, his mother’s soul.
+Shishira. The camp of healers and families Rudra burned.
+Brahmashira. A weapon that burns souls loose, without rebirth.
+Sanjivani. The asura rite that raises the dead.
+Amrita. The nectar of immortality.
+Vaitarani. The river of the dead.
+Wardens. The six bosses who hold shards.
+Look. The interact button that rewards attention.
+The Ferry. The conversation between acts.
+Burn. Rudra’s Act V ability to burn blood pools, at a cost in health.
+Ashen Karma. The currency of guilt, spent at the shrine.
+

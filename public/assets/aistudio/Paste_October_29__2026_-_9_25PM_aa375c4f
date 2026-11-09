@@ -1,0 +1,2578 @@
+# BUILDING AN INDIAN MYTHOLOGY ACTION ROGUELITE
+## A complete game-design and development blueprint inspired by Hades and Hades II
+
+You're not looking for a mythology summary. You're trying to understand **how games like Hades are designed, how their systems fit together, how their combat actually works, and how you could build an original game using Indian mythology.**
+
+That's a much more interesting problem.
+
+I'm going to approach this as a game-design document for your project, covering:
+
+- The action roguelite genre and its design principles.
+- Combat architecture, player movement, attacks and enemy AI.
+- Weapons, abilities, upgrades and build combinations.
+- Enemy design, boss encounters and difficulty curves.
+- Procedural room generation and level progression.
+- Indian mythology as a foundation for original mechanics and environments.
+- Art direction, animation, visual effects and sound.
+- Game engines, programming architecture and development tools.
+- Balancing, playtesting, optimisation and production planning.
+- A practical roadmap for building a playable prototype and expanding it into a complete game.
+
+I'll use Hades and Hades II as reference points, but the goal is to understand the underlying techniques rather than copy their content.
+
+Supergiant's own development notes are a useful starting point. The studio describes Hades as a combination of fast-paced action, repeated runs, persistent progression and randomly varying combinations of abilities. It also explains that the game's modular structure was deliberately designed to support development through Early Access. [Supergiant Games](https://www.supergiantgames.com/blog/hades-faq/?utm_source=chatgpt.com)
+
+**My main recommendation:** Build a small, exceptionally satisfying combat prototype before creating an enormous mythology, dozens of bosses or a complicated progression system.
+
+A beautiful game with mediocre combat is still a mediocre action game. A simple prototype with excellent movement, readable attacks and satisfying enemy encounters gives you something worth expanding.
+
+---
+
+# PART 1 — UNDERSTAND THE GENRE BEFORE BUILDING IT
+
+## 1. What genre are you actually making?
+
+The closest genre description for your project is:
+
+**Isometric action roguelite with arena combat, procedural encounter progression, permanent upgrades and mythology-inspired worldbuilding.**
+
+Let's break that down.
+
+| Genre component | What it means for your game |
+|---|---|
+| Action | The player controls movement and attacks in real time. |
+| Isometric | The camera looks down at the world from an elevated angle. |
+| Roguelite | Runs feature substantial variation, while some progress persists between attempts. |
+| Arena combat | Enemies and players fight in bounded spaces designed around movement and attack patterns. |
+| Procedural progression | The game assembles runs from predefined rooms, encounters and rewards. |
+| Build-based progression | Players combine upgrades to create different combat strategies. |
+| Mythology-inspired action RPG | Characters, enemies, powers and environments draw inspiration from Indian mythology. |
+
+The important point is that these components aren't independent.
+
+A weapon's attack pattern affects how an arena should be designed. Arena dimensions affect how enemies behave. Enemy behaviour affects which upgrades are useful. Upgrade combinations affect the game's difficulty.
+
+You are designing an interconnected system.
+
+## 2. What makes an action roguelite different from a conventional action game?
+
+Consider two hypothetical games.
+
+**Game A:** You start a campaign, complete level one, unlock level two and retain your equipment throughout the campaign.
+
+**Game B:** You start a run, collect temporary upgrades, fight through a sequence of encounters, eventually fail or finish the run, retain selected permanent progress and start another run with a different combination of upgrades.
+
+Game B uses the defining structure of a roguelite.
+
+Each run is a temporary journey within a larger progression system.
+
+### The five essential pillars
+
+I would organise your game's design around five pillars.
+
+**Pillar 1 — Combat mastery**
+
+The player improves by learning movement, attack timing, enemy behaviour and the strengths of their abilities.
+
+**Pillar 2 — Build experimentation**
+
+The player discovers different combinations of attacks, passive upgrades and special abilities.
+
+**Pillar 3 — Meaningful variation**
+
+Different runs create different tactical situations, rewards and challenges.
+
+**Pillar 4 — Persistent progression**
+
+A failed run can still contribute to future attempts through selected resources, unlocks or other forms of progress.
+
+**Pillar 5 — A strong audiovisual identity**
+
+Movement, animation, effects, environments and sound make the game recognisable and enjoyable to play.
+
+If one pillar is weak, the others cannot always compensate for it.
+
+For example, permanent upgrades cannot make repeated combat interesting if the enemies and attack patterns are dull.
+
+Likewise, procedural generation cannot save a game if the rooms it generates are poorly designed.
+
+---
+
+## 3. The core gameplay loop
+
+Before building individual features, define the entire loop.
+
+
+
+
+
+
+
+This loop is the backbone of the game.
+
+Every feature should contribute to one or more of its stages.
+
+For example:
+- A new weapon improves preparation and combat variation.
+- An elite enemy makes an encounter more demanding.
+- A new upgrade creates a build decision.
+- A permanent unlock improves future preparation.
+- A new boss changes the player's understanding of combat.
+
+If a feature doesn't improve the game loop, question whether it belongs in the first version.
+
+---
+
+# PART 2 — COMBAT DESIGN: THE MOST IMPORTANT SYSTEM
+
+## 4. Start with the player controller
+
+Your player controller is the foundation of the entire combat experience.
+
+Before implementing elaborate abilities, you need reliable movement, responsive attacks and clear feedback.
+
+The player should feel as though their inputs directly control the character.
+
+### 4.1 Movement
+
+For an isometric action game, movement usually takes place on a two-dimensional ground plane, even when the visuals use three-dimensional models.
+
+A simple movement vector can be represented as:
+
+\[
+\mathbf{v}=(v_x,v_y)
+\]
+
+If the player provides horizontal and vertical inputs, calculate the resulting direction and normalise it.
+
+Why normalise?
+
+Without normalisation, diagonal movement may be faster than horizontal or vertical movement because the two input components combine.
+
+A simplified movement calculation is:
+
+\[
+\mathbf{d}=
+\begin{cases}
+\frac{\mathbf{i}}{\|\mathbf{i}\|}, & \|\mathbf{i}\|>0\\
+(0,0), & \text{otherwise}
+\end{cases}
+\]
+
+Then:
+
+\[
+\mathbf{v}=s\mathbf{d}
+\]
+
+where \(s\) is the movement speed.
+
+For a game with acceleration and deceleration, you can interpolate the current velocity towards the desired velocity instead of changing speed instantaneously.
+
+This allows you to tune whether movement feels sharp, heavy, slippery or responsive.
+
+### 4.2 Movement must respect the world
+
+The controller must account for:
+- Walls and solid objects.
+- Arena boundaries.
+- Obstacles.
+- Enemy collision rules.
+- Movement restrictions during certain animations.
+- Any terrain that changes movement speed.
+
+Don't make the player controller dependent on a specific room.
+
+The same controller should work in every arena.
+
+### 4.3 Dodge mechanics
+
+A dodge can combine rapid movement with a brief period of damage immunity.
+
+For your prototype, separate the mechanic into three concepts:
+
+1. **Movement duration:** How long the dodge movement lasts.
+2. **Distance:** How far the player travels.
+3. **Invulnerability window:** When incoming attacks cannot damage the player.
+
+These values should be configurable.
+
+Do not assume that a longer dodge is automatically better. If the dodge is too powerful, ordinary enemy attacks become irrelevant. If it's too weak, combat can feel unfair.
+
+Also consider a recovery period after dodging, so the player cannot evade indefinitely without making decisions.
+
+### 4.4 Facing direction and attack direction
+
+In an isometric game, the character's facing direction and the direction of the attack need to remain consistent.
+
+You must decide whether attacks:
+- Follow the player's movement direction.
+- Follow the mouse cursor.
+- Lock onto a nearby enemy.
+- Use the direction selected when the attack begins.
+
+Each option changes the feel of combat.
+
+Mouse aiming provides precision but may make gamepad control more complicated. Directional attacks can work well on controllers, but require good target selection and readable attack animations.
+
+Choose the control model early. Retrofitting the entire combat system later can be expensive.
+
+---
+
+## 5. Build combat around a state machine
+
+A state machine defines which actions the player can perform at a given time.
+
+Without one, movement, attacks, dodges and hit reactions can interfere with one another.
+
+For example, if the player starts an attack and immediately dodges, what happens to the attack animation? Can the attack be cancelled? Does the character continue moving? Can the player take damage during the transition?
+
+These are state-transition questions.
+
+A basic player state machine might contain:
+
+- Idle.
+- Moving.
+- Attacking.
+- Special attack.
+- Casting an ability.
+- Dodging.
+- Taking damage.
+- Stunned.
+- Dead.
+
+The exact states depend on your design.
+
+### State-transition example
+
+Suppose the player is attacking.
+
+A dodge input arrives.
+
+The controller checks whether dodging is permitted during the current attack.
+
+If the attack is cancellable, the game interrupts the attack and enters the dodge state.
+
+If it isn't cancellable, the input may be buffered and executed after the attack finishes, provided the player is still alive and the action remains valid.
+
+This is more reliable than letting each animation independently control the character.
+
+### Animation events and combat logic
+
+Animations and combat logic should communicate, but they shouldn't become the sole authority over every gameplay rule.
+
+For example, an attack animation might notify the combat system when the hitbox becomes active.
+
+The combat system then checks whether a valid target has been hit and applies the appropriate result.
+
+This separation makes it easier to change an animation without accidentally rewriting the damage system.
+
+---
+
+## 6. Design a complete attack
+
+A satisfying attack consists of more than a damage value.
+
+It has a beginning, an active period and an ending.
+
+A useful attack model contains three phases.
+
+| Phase | What happens | Design purpose |
+|---|---|---|
+| Startup | The attack begins and communicates intent | Allows anticipation and counterplay |
+| Active | The attack can hit valid targets | Defines the actual damage opportunity |
+| Recovery | The attack finishes and the character regains control | Creates commitment and timing decisions |
+
+These phases are commonly used in action games because they make attacks readable and allow players to learn timing.
+
+### Example: a basic melee attack
+
+Suppose your player performs a fast melee strike.
+
+During startup, the character begins the attack animation.
+
+During the active phase, a hitbox checks for overlapping enemies.
+
+During recovery, the character finishes the movement before returning to a state that permits another action.
+
+The actual durations should be determined through testing, not copied blindly from another game.
+
+A slow, powerful attack needs different timing from a rapid strike.
+
+### What makes an attack satisfying?
+
+I would evaluate every attack against six questions:
+
+1. Does it respond promptly to the input?
+2. Is its range understandable?
+3. Is its impact visually and audibly clear?
+4. Does it interact consistently with enemy hitboxes?
+5. Does it have a useful role in the combat system?
+6. Does it create a meaningful decision about when to use it?
+
+An attack can have impressive animation and still feel weak if it lacks impact or fails to produce a clear response.
+
+---
+
+## 7. Hitboxes, hurtboxes and damage resolution
+
+This is one of the most important technical concepts in action combat.
+
+A **hitbox** represents the region where an attack can connect.
+
+A **hurtbox** represents the region in which a character can receive damage.
+
+The game detects an overlap or collision between the relevant shapes and determines whether a valid hit has occurred.
+
+### Common hitbox types
+
+**Melee hitbox:** A short-lived region in front of a character.
+
+**Projectile hitbox:** A moving region attached to a projectile.
+
+**Area-of-effect hitbox:** A region that damages targets inside a defined area.
+
+**Persistent hazard:** A damaging region that remains active for a period of time.
+
+You should not use the same damage logic for every attack without considering its behaviour.
+
+A sweeping attack might hit several enemies. A projectile might disappear on impact. A persistent hazard might damage the same enemy repeatedly unless you explicitly prevent it.
+
+### Prevent accidental repeated hits
+
+Suppose an attack remains active for several frames.
+
+The target is still overlapping the hitbox during those frames.
+
+If the damage system processes the overlap every frame, the enemy may receive many hits from a single attack.
+
+You need an explicit hit policy.
+
+For example:
+- One hit per attack instance.
+- One hit per target per attack.
+- Repeated damage at defined intervals.
+- Continuous damage while the target remains inside a hazard.
+
+The correct rule depends on the ability.
+
+**Design rule:** Damage behaviour must be intentional and consistent, never an accidental consequence of collision processing.
+
+---
+
+## 8. Damage, health and combat feedback
+
+Start with a simple damage model.
+
+A basic damage calculation might be:
+
+\[
+D_{\text{final}}=\max(0,D_{\text{base}}-A)
+\]
+
+where:
+- \(D_{\text{base}}\) is the attack's base damage.
+- \(A\) is the target's defensive value.
+
+This is merely one possible formula. You may later use multiplicative modifiers, damage types, critical hits or other mechanics.
+
+For your first prototype, simplicity is an advantage.
+
+### Add complexity gradually
+
+A practical order is:
+
+1. Base damage.
+2. Health and death.
+3. Attack-specific damage.
+4. Temporary damage bonuses.
+5. Enemy damage reduction.
+6. Critical hits, if the design needs them.
+7. Status effects.
+8. More complex interactions between upgrades.
+
+Each additional mechanic increases the number of interactions you must test.
+
+### Feedback when an attack hits
+
+A hit should produce a clear response.
+
+That response can include:
+- An impact animation.
+- A short sound effect.
+- A brief hit flash.
+- A damage indicator, if appropriate.
+- A small hit reaction.
+- A subtle pause or impact accent, where appropriate to the game's feel.
+
+Do not use every effect on every attack. The feedback should communicate the strength and nature of the impact without obscuring the battlefield.
+
+### Hitstop
+
+Hitstop is a brief pause or slowdown applied at the moment of impact.
+
+Used carefully, it can make an attack feel more substantial.
+
+However, excessive hitstop can make rapid combat feel sluggish.
+
+Treat it as a tuning parameter, not a universal solution to weak combat.
+
+---
+
+# PART 3 — WEAPONS, ABILITIES AND BUILD DESIGN
+
+## 9. Don't design weapons as a collection of cool animations
+
+This is a common beginner mistake.
+
+A developer imagines six spectacular weapons, commissions six sets of artwork and creates six attack animations. But when the weapons are tested, they all play almost identically.
+
+One hits slightly harder. Another attacks slightly faster. A third has a different colour.
+
+That isn't meaningful weapon variety.
+
+A good weapon has a distinct **combat identity**: it changes how the player approaches enemies, uses space, manages risk and benefits from upgrades.
+
+### 9.1 Create a weapon design matrix
+
+For your Indian mythology-inspired game, I would initially design four weapon archetypes.
+
+These are original design proposals, not weapons taken from Hades.
+
+| Archetype | Combat identity | Main strength | Main weakness |
+|---|---|---|---|
+| Astral staff | Mid-range attacks and magical control | Flexible range and utility | Requires careful resource management |
+| Twin blades | Rapid, close-range attacks | High mobility and repeated hits | Must approach dangerous enemies |
+| Heavy celestial weapon | Slow, powerful strikes | Strong individual attacks and stagger potential | Long recovery periods |
+| Chakriform ranged weapon | Ranged attacks and returning projectiles | Can threaten enemies from a distance | Requires careful positioning and projectile management |
+
+The names and supernatural properties are up to you. The important part is that each weapon should have a different reason to exist.
+
+### 9.2 Give every weapon a mechanical identity
+
+Consider a heavy weapon.
+
+Its purpose shouldn't simply be to deal more damage.
+
+It might:
+- Break enemy armour.
+- Interrupt certain attacks.
+- Push smaller enemies away.
+- Deal greater damage to staggered enemies.
+- Sacrifice attack speed for strong area coverage.
+
+Now consider a fast weapon.
+
+It might:
+- Apply a status effect through repeated hits.
+- Build a resource as the player attacks.
+- Reward attacking enemies from behind.
+- Allow quicker recovery after an attack.
+- Benefit from effects that trigger on repeated hits.
+
+These mechanics create different strategies.
+
+The heavy weapon wants openings for committed attacks. The fast weapon wants sustained access to targets.
+
+**That's meaningful variety because the player must make different decisions.**
+
+### 9.3 Design weapons around questions
+
+For every weapon, answer these seven questions:
+
+1. At what distance is it most effective?
+2. How does it deal damage?
+3. What makes its movement or positioning different?
+4. How does it handle groups of enemies?
+5. What is its main weakness?
+6. Which upgrades particularly benefit it?
+7. What does the player need to learn to master it?
+
+If two weapons have nearly identical answers, reconsider whether both are necessary.
+
+---
+
+## 10. The upgrade system: build combinations are more important than individual upgrades
+
+The most important thing to understand about Hades-style build design is that a collection of powerful upgrades isn't necessarily a powerful build.
+
+The upgrades need to interact.
+
+Imagine that your game contains three effects:
+
+- **Solar Mark:** Certain attacks apply a mark to enemies.
+- **Astral Echo:** Attacking marked enemies produces an additional effect.
+- **Celestial Resonance:** Triggering that effect restores a small amount of a resource.
+
+Individually, these upgrades are straightforward.
+
+Together, they form a system:
+
+1. Apply a mark.
+2. Attack the marked target.
+3. Trigger an additional effect.
+4. Recover a resource.
+5. Use the resource to activate another ability.
+
+The player has discovered a combat strategy rather than merely collected three bonuses.
+
+This is the kind of interaction that makes players excited to experiment with builds.
+
+### 10.1 Four categories of upgrades
+
+I recommend separating upgrades into four categories.
+
+| Category | Purpose | Example |
+|---|---|---|
+| Direct enhancement | Improves an existing action | Increase basic attack damage |
+| Behaviour modification | Changes how an action works | A projectile returns after hitting its target |
+| Synergy effect | Interacts with another mechanic | Attacking a marked enemy triggers an extra effect |
+| Strategic utility | Changes how the player manages combat | Dodging briefly increases movement speed |
+
+Each category creates a different kind of decision.
+
+Direct enhancements are easy to understand. Behaviour modifications can transform a playstyle. Synergies reward experimentation. Utility effects can become valuable even when they don't directly increase damage.
+
+### 10.2 Build for different playstyles
+
+Your game should support several viable approaches.
+
+**Aggressive build:** Rewards sustained attacks and proximity to enemies.
+
+**Defensive build:** Rewards successful dodges, protection and controlled counterattacks.
+
+**Ranged build:** Rewards distance, projectile accuracy and positioning.
+
+**Ability-focused build:** Rewards resource management and the effective use of special abilities.
+
+**Status-focused build:** Rewards applying and exploiting conditions on enemies.
+
+These are not mutually exclusive categories. A player might combine ranged attacks with status effects or defensive abilities with aggressive counterattacks.
+
+That flexibility is the point.
+
+### 10.3 Avoid the damage-number trap
+
+A build system is not interesting merely because one combination can deal enormous damage.
+
+If a single combination is consistently better than everything else, the player has little reason to experiment.
+
+You want meaningful trade-offs.
+
+For example:
+- A high-damage build may be difficult to use safely.
+- A defensive build may deal less damage but tolerate mistakes.
+- A status build may require preparation before its damage becomes effective.
+- A ranged build may struggle when enemies close the distance.
+
+These trade-offs create different experiences without making one option obviously useless.
+
+---
+
+## 11. Design status effects carefully
+
+Status effects are conditions applied to enemies or players.
+
+They can make combat more varied, but too many overlapping effects create unnecessary complexity.
+
+For your first version, start with three or four.
+
+Here are original examples you could adapt to your setting:
+
+| Effect | Mechanical function | Tactical purpose |
+|---|---|---|
+| Scorched | Deals damage over time | Rewards repeated application or sustained pressure |
+| Bound | Temporarily restricts movement | Creates opportunities for follow-up attacks |
+| Exposed | Increases damage received | Rewards coordinated attack sequences |
+| Disrupted | Interrupts or weakens a specific enemy action | Provides a counter to dangerous attacks |
+
+These names are provisional. You could create different names and visual treatments inspired by your setting.
+
+### Important implementation decisions
+
+For every status effect, define:
+
+- Its duration.
+- Its strength.
+- Whether it stacks.
+- Whether repeated applications refresh it.
+- Whether it can affect bosses.
+- Whether it interacts with other effects.
+- What visual and audio feedback communicates it.
+- Whether the enemy can resist or remove it.
+
+You should not make every status effect work identically.
+
+For example, repeated application of a damage-over-time effect might refresh its duration, while repeated application of a control effect might extend its duration only up to a limit.
+
+These rules should be consistent and easy to communicate.
+
+### Bosses require special treatment
+
+A movement-restriction effect that works on ordinary enemies may trivialise a boss if applied without limits.
+
+You have several options:
+- Make bosses immune to the effect.
+- Allow the effect to work at reduced strength.
+- Give the boss a resistance meter.
+- Permit the effect only during particular phases.
+- Let the effect interrupt minor attacks but not major attacks.
+
+The right choice depends on the boss's identity.
+
+The goal is to preserve the usefulness of the upgrade without eliminating the encounter's challenge.
+
+---
+
+# PART 4 — ENEMY AI AND ENCOUNTER DESIGN
+
+## 12. Enemies need roles, not just different appearances
+
+A good enemy roster is built around complementary behaviours.
+
+Imagine an arena containing:
+- One enemy that attacks from close range.
+- One enemy that fires projectiles.
+- One enemy that creates a dangerous area.
+- One enemy that supports the others.
+
+Each enemy creates a different problem.
+
+The melee enemy pressures the player's position. The ranged enemy makes standing still dangerous. The area-control enemy restricts movement. The support enemy changes which target is most important.
+
+The encounter becomes interesting because the enemies interact.
+
+If every enemy simply approaches the player and attacks, you have variety in appearance but very little variety in tactics.
+
+## 12.1 Start with five enemy archetypes
+
+You don't need twenty enemies to make an interesting prototype.
+
+Start with five clearly differentiated roles.
+
+| Enemy role | Behaviour | What it teaches the player |
+|---|---|---|
+| Chaser | Approaches and attacks at close range | Positioning and dodging |
+| Ranged attacker | Fires projectiles from a distance | Movement and target prioritisation |
+| Area controller | Creates hazardous zones | Spatial awareness |
+| Heavy attacker | Uses slower, more powerful attacks | Timing and attack commitment |
+| Support enemy | Buffs, protects or otherwise assists allies | Target selection |
+
+These roles can support many combinations.
+
+For example, a chaser and a ranged attacker create a different encounter from a heavy attacker and an area controller.
+
+The number of possible combinations increases before you create any additional enemy types.
+
+## 12.2 Build enemies using reusable components
+
+Don't program every enemy from scratch.
+
+Create reusable systems for:
+- Health.
+- Damage reception.
+- Movement.
+- Target detection.
+- Attack execution.
+- Stagger or interruption.
+- Status effects.
+- Death and removal.
+- Reward generation.
+
+Then let individual enemy types configure those systems differently.
+
+A chaser might use pursuit movement and a melee attack.
+
+A ranged attacker might maintain distance and use a projectile attack.
+
+A heavy attacker might have slower movement, higher health and a powerful telegraphed strike.
+
+The shared components reduce duplicated code and make balancing easier.
+
+## 12.3 Use an enemy state machine
+
+A simple enemy state machine might look like this:
+
+**Idle → Detect player → Approach → Prepare attack → Attack → Recover → Reposition**
+
+Additional states can include:
+- Stunned.
+- Searching.
+- Retreating.
+- Performing a special ability.
+- Dead.
+
+The enemy transitions between states based on clear conditions.
+
+For example:
+
+- If the player is outside detection range, remain idle or patrol.
+- If the player enters detection range, begin approaching.
+- If the player enters attack range and the attack is available, begin preparing it.
+- After the attack finishes, enter recovery.
+- Once recovery ends, choose the next action.
+
+This is much easier to reason about than an enemy script containing dozens of unrelated conditional statements.
+
+### The most important rule
+
+**Enemies should communicate their intentions before dangerous attacks.**
+
+A player needs a fair opportunity to recognise and respond to a threat.
+
+That brings us to one of the most important concepts in action-game design.
+
+---
+
+## 13. Telegraphing: how players learn to read combat
+
+A telegraph is a visual, audio or animation cue that indicates an enemy is about to perform an action.
+
+For example, a heavy enemy might:
+1. Plant its feet.
+2. Raise its weapon.
+3. Briefly display a warning effect.
+4. Execute a powerful strike.
+5. Enter a recovery period.
+
+The player learns the sequence and begins dodging at the appropriate time.
+
+Telegraphing turns combat from unpredictable damage into a skill-based interaction.
+
+### 13.1 Three qualities of a good telegraph
+
+**Recognition:** The player can distinguish the attack from the enemy's other actions.
+
+**Timing:** The player has a reasonable opportunity to react.
+
+**Consistency:** The attack behaves according to the visual information provided.
+
+If an enemy shows a large warning area but damages the player outside that area, the attack feels unfair.
+
+If two attacks use nearly identical animations but require completely different responses, the player may struggle to distinguish them.
+
+### 13.2 Communicate different attack shapes
+
+Use distinct visual cues for different kinds of attacks.
+
+- A narrow line can indicate a directional strike.
+- A circular area can indicate an explosion.
+- A fan-shaped area can indicate a sweeping attack.
+- A moving projectile can indicate a ranged threat.
+- A sequence of expanding circles can indicate repeated area attacks.
+
+These are generic design examples, not mandatory visual conventions.
+
+The key is consistency within your own game.
+
+### 13.3 Don't telegraph everything in exactly the same way
+
+If every attack produces the same warning circle and sound, players will eventually stop paying attention.
+
+Your telegraphs should match the nature of the attack.
+
+A fast projectile needs different timing from a large area attack.
+
+A boss's ultimate attack may need a stronger visual and audio warning than a minor enemy strike.
+
+The player should be able to understand danger without every encounter looking identical.
+
+---
+
+## 14. Make combat difficult without making it unfair
+
+Difficulty should come from learning, positioning, timing and decision-making.
+
+Avoid relying exclusively on increasing enemy health.
+
+A simple difficulty curve might progress as follows:
+
+**Early game:** One enemy at a time, with generous opportunities to react.
+
+**Intermediate encounters:** Two or three enemy roles appear together.
+
+**Later encounters:** Enemies coordinate their attacks, reducing the player's safe options.
+
+**Elite encounters:** Familiar enemies gain a new behaviour or more demanding attack pattern.
+
+**Boss fights:** Several mechanics are combined into a sustained encounter.
+
+This structure teaches players before testing them.
+
+### A useful encounter-design rule
+
+When introducing a new mechanic, consider presenting it in a relatively simple situation before combining it with other mechanics.
+
+For example, introduce a ranged enemy in a room without other major threats.
+
+Later, combine that enemy with a melee chaser.
+
+Finally, introduce a room where the ranged enemy and chaser operate alongside an area-control enemy.
+
+The player learns the individual behaviours and then learns to handle them together.
+
+### Avoid cheap difficulty
+
+These are common warning signs:
+- Enemies attack from outside the visible camera area without warning.
+- Projectiles blend into the background.
+- Multiple attacks cover the entire arena with no safe route.
+- Hitboxes extend far beyond the visible attack.
+- The player is interrupted constantly without meaningful counterplay.
+- A boss becomes difficult mainly because it has an enormous health pool.
+
+Some attacks can be deliberately difficult to avoid, but they should have a clear purpose and be balanced around the player's available options.
+
+---
+
+# PART 5 — BOSS DESIGN
+
+## 15. A boss is a complete combat lesson
+
+A boss should not merely be a larger enemy with more health.
+
+It should test a specific combination of skills.
+
+Before designing one, write a short statement:
+
+> This boss tests the player's ability to ______.
+
+Examples:
+- Maintain awareness of multiple threats.
+- Recognise and punish attack recovery.
+- Move through changing hazardous areas.
+- Choose targets under pressure.
+- Manage resources during a prolonged encounter.
+- Adapt when the boss changes its attack pattern.
+
+If you cannot explain what the boss tests, its mechanics may lack a clear purpose.
+
+## 15.1 Design a boss in five layers
+
+### Layer 1: Identity
+
+What makes the boss recognisable?
+
+This includes its appearance, movement, attack style and place in the world.
+
+For your game, a boss inspired by a particular mythological creature should have an identity beyond its name and visual appearance.
+
+Its behaviour should support that identity.
+
+### Layer 2: Core attacks
+
+Start with three or four distinct attacks.
+
+For example:
+- A basic attack that teaches the player the boss's range.
+- A directional attack that requires repositioning.
+- An area attack that changes where the player can safely stand.
+- A more demanding attack that combines previously learned patterns.
+
+Don't begin by designing fifteen attacks.
+
+A small number of well-developed moves is easier to balance and makes the boss easier to learn.
+
+### Layer 3: Arena interaction
+
+The boss can interact with the arena in ways that reinforce its mechanics.
+
+It might:
+- Create temporary hazards.
+- Block certain routes.
+- Force the player to change position.
+- Summon lesser enemies.
+- Alter the shape of the safe area.
+
+Arena mechanics should add meaningful decisions rather than simply filling the screen with effects.
+
+### Layer 4: Phases
+
+A phase change introduces a new pattern or changes the rules of the encounter.
+
+A simple two-phase structure might work like this:
+
+**Phase one:** The boss uses a small set of clearly telegraphed attacks.
+
+**Phase two:** The boss combines those attacks with a new mechanic that requires the player to adapt.
+
+You do not need multiple phases in every boss. A short, mechanically distinctive encounter can be more effective than a long fight with repetitive phases.
+
+### Layer 5: Reward and progression
+
+The boss should conclude an important part of the run.
+
+The reward might provide:
+- A major upgrade.
+- A persistent resource.
+- Access to a new region.
+- A choice that affects the rest of the run.
+- An unlock that changes future attempts.
+
+The reward should be meaningful without making the rest of the run trivial.
+
+---
+
+## 16. Design boss attacks as patterns, not isolated animations
+
+Imagine a boss that performs three attacks.
+
+**Attack A:** A direct strike.
+
+**Attack B:** A sweeping area attack.
+
+**Attack C:** A temporary hazard.
+
+Each attack can be understandable on its own.
+
+The boss becomes interesting when it combines them in ways that require the player to think ahead.
+
+For example, a direct strike may push the player towards a hazardous area, after which the boss performs the sweeping attack.
+
+The player must recognise not only the current attack but also how it changes the available space.
+
+That is encounter design.
+
+### Use patterns with controlled variation
+
+You can choose the next boss attack based on:
+- Distance from the player.
+- Player position.
+- Current phase.
+- Previous attacks.
+- Time since the last special move.
+- Whether another enemy or hazard is active.
+
+However, the boss should not make completely arbitrary decisions every frame.
+
+If it changes attacks too unpredictably, players cannot learn its behaviour.
+
+A good system uses a defined set of attacks and chooses among them according to understandable rules.
+
+---
+
+# PART 6 — LEVEL DESIGN AND PROCEDURAL GENERATION
+
+## 17. How Hades-style rooms are designed
+
+One of the biggest misconceptions about procedural roguelites is that their levels are generated entirely at random.
+
+For a game like yours, **I recommend designing individual rooms by hand and procedurally assembling those rooms into a run.**
+
+This gives you variation without sacrificing encounter quality.
+
+A randomly generated room can easily produce:
+- Enemies that become stuck behind obstacles.
+- Unfair combinations of hazards.
+- Poorly positioned enemies.
+- Narrow movement routes.
+- Boss arenas that don't support the boss's mechanics.
+
+Hand-designed rooms let you control those variables.
+
+Procedural selection then creates different sequences from the rooms you've already tested.
+
+## 17.1 Design rooms as reusable modules
+
+A room is a self-contained gameplay space.
+
+Each room should define:
+- Its geometry.
+- Its entrance and exit.
+- Its collision boundaries.
+- Its possible enemy spawn points.
+- Its available combat space.
+- Its environmental hazards.
+- Its reward position.
+- Its intended difficulty range.
+
+You might create several room families:
+
+| Room family | Purpose |
+|---|---|
+| Small arena | Introduces enemies and simple encounters |
+| Wide arena | Supports ranged enemies and movement |
+| Obstacle arena | Makes positioning and line of sight important |
+| Hazard arena | Introduces environmental pressure |
+| Elite arena | Tests stronger enemy combinations |
+| Reward room | Provides a break from combat |
+| Boss arena | Supports a particular boss's attack patterns |
+
+The room's purpose should influence its dimensions and layout.
+
+A room designed for a slow, powerful boss may be unsuitable for a boss that constantly changes position.
+
+## 17.2 Define room metadata
+
+Every room should contain data that describes its capabilities.
+
+For example:
+
+```text
+Room ID: Forest_Arena_03
+
+Region: Sacred Forest
+Room Type: Combat
+Difficulty: Intermediate
+
+Supported Enemy Roles:
+- Chaser
+- Ranged Attacker
+- Support
+
+Maximum Enemy Budget: 6
+Hazard Types:
+- Roots
+
+Boss Room: No
+Reward Type: Standard
+```
+
+This is illustrative metadata, not a required file format.
+
+The room generator can use these properties to select appropriate rooms and encounters.
+
+If a room doesn't support a particular enemy type, the generator should not place that enemy there.
+
+## 17.3 Use room graphs to structure runs
+
+A run can be represented as a graph.
+
+Each node represents a room or encounter. Connections represent possible routes between them.
+
+A simple sequence might look like:
+
+**Starting room → Combat room → Reward choice → Combat room → Elite encounter → Boss**
+
+You can also introduce branching choices:
+
+- A safer route with a modest reward.
+- A dangerous route with a stronger reward.
+- A resource-gathering room.
+- A recovery opportunity.
+
+Branching makes the player choose what kind of risk to accept.
+
+The important part is that every route should be valid and completable.
+
+### Why not generate every room from scratch?
+
+Fully procedural geometry is possible, but it introduces additional engineering and design problems.
+
+You must ensure that the resulting rooms:
+- Have valid entrances and exits.
+- Provide sufficient combat space.
+- Support the required enemy behaviours.
+- Remain visually coherent.
+- Avoid creating impossible encounters.
+
+For your first game, procedural assembly of handcrafted rooms is a better starting point.
+
+---
+
+## 18. The encounter director
+
+A useful system for your game is an **encounter director**.
+
+Its job is to decide which enemies appear together and where they should spawn.
+
+It should not select enemies purely at random.
+
+Instead, it considers the intended difficulty and the room's capabilities.
+
+### 18.1 Use an enemy budget
+
+Assign each enemy a rough encounter-cost value.
+
+For example, your prototype might use:
+
+| Enemy | Example encounter cost |
+|---|---:|
+| Basic chaser | 1 |
+| Ranged attacker | 2 |
+| Heavy attacker | 3 |
+| Area controller | 3 |
+| Support enemy | 2 |
+
+These are example values for a hypothetical system, not balanced recommendations.
+
+A beginner encounter might have a budget of 3. A harder encounter might have a budget of 7.
+
+The director selects a combination of enemies that fits the budget and the room's restrictions.
+
+But there is an important limitation: enemy costs alone cannot guarantee a fair encounter.
+
+Three ranged enemies may create a much more difficult situation than one heavy attacker and two chasers, even if both combinations have the same nominal cost.
+
+You must also account for enemy interactions.
+
+### 18.2 Define encounter rules
+
+Useful restrictions include:
+- Limit the number of enemies that can perform unavoidable area attacks simultaneously.
+- Avoid combining certain enemies in very small rooms.
+- Keep spawn points away from the player's starting position.
+- Reserve enough room for the player to dodge.
+- Prevent enemies from spawning inside walls or hazards.
+- Introduce new enemy combinations gradually.
+
+These rules make procedural encounters more reliable.
+
+### 18.3 Difficulty should escalate in several ways
+
+Instead of simply increasing enemy health, you can increase:
+- Enemy variety.
+- Number of simultaneous threats.
+- Attack frequency.
+- Complexity of enemy combinations.
+- Environmental pressure.
+- Frequency of elite encounters.
+- Boss attack combinations.
+
+Changing the composition of encounters often produces more interesting difficulty than inflating statistics.
+
+---
+
+# PART 7 — PERMANENT PROGRESSION AND REWARDS
+
+## 19. Separate temporary power from permanent power
+
+This distinction is essential to the roguelite structure.
+
+### Temporary progression
+
+Temporary progression affects the current run.
+
+Examples:
+- Damage bonuses.
+- Weapon modifications.
+- New abilities.
+- Temporary protection.
+- Run-specific resources.
+- Upgrades that interact with the current build.
+
+When the run ends, most of these effects disappear.
+
+### Permanent progression
+
+Permanent progression affects future runs.
+
+Examples:
+- Unlocking a new weapon.
+- Unlocking additional upgrade options.
+- Improving a character's base capabilities.
+- Opening new regions.
+- Unlocking new systems or challenges.
+
+The player retains this progress after the run.
+
+### Why both are necessary
+
+Temporary progression creates excitement within a run.
+
+Permanent progression gives repeated attempts a longer-term purpose.
+
+If everything is permanent, players may gradually eliminate the challenge.
+
+If nothing is permanent, unsuccessful attempts can feel unproductive.
+
+The balance between these two systems is one of the defining design decisions in a roguelite.
+
+---
+
+## 20. Design rewards around meaningful choices
+
+A reward screen should not simply offer three versions of the same damage increase.
+
+The choices should support different strategies.
+
+Imagine the player receives three options:
+
+**Option A — Power:** Increase the damage of the primary attack.
+
+**Option B — Mobility:** Reduce the recovery period after dodging.
+
+**Option C — Synergy:** Attacks against marked enemies trigger an additional effect.
+
+Each option supports a different approach.
+
+A player with a fast weapon might prefer the synergy upgrade. A player who frequently gets hit might value mobility. Another player might choose raw damage.
+
+The best option depends on the current build and the player's priorities.
+
+### 20.1 The three-choice reward structure
+
+A three-choice reward is a useful prototype because it presents a manageable decision.
+
+However, you don't need to force every reward into that format.
+
+Different reward types can serve different purposes.
+
+For example:
+- A weapon reward changes the available combat approach.
+- A resource reward supports permanent progression.
+- A healing reward improves survival.
+- A rare upgrade introduces a more specialised mechanic.
+
+The reward structure should be varied enough to create decisions but consistent enough to understand.
+
+### 20.2 Reward value must be contextual
+
+An upgrade that increases damage by a fixed amount may be useful early in a run but relatively insignificant later.
+
+Conversely, an upgrade that provides utility may become increasingly valuable when encounters become more complicated.
+
+This is why reward balancing cannot be done by looking at the upgrade in isolation.
+
+You must evaluate its effect on different weapons, builds and stages of progression.
+
+---
+
+# PART 8 — BUILDING YOUR GAME AROUND INDIAN MYTHOLOGY
+
+This is where your project can establish an identity beyond "Hades, but Indian."
+
+The strongest approach is to use Indian mythology and cultural traditions as sources of inspiration for **mechanics, visual design, environments, symbolism and worldbuilding**, not just character names.
+
+Research on Indian games has examined how mythology and cultural heritage can shape game mechanics, architecture, aesthetics and player experience. The study *How Not to Play an Indian Mythic: Raji: A Modern Fantasy* is particularly relevant because it analyses the relationship between mythological representation and gameplay design. [AnthroSource](https://anthrosource.onlinelibrary.wiley.com/doi/abs/10.1002/cyo2.36?utm_source=chatgpt.com)
+
+## 21. Decide what kind of mythological world you're building
+
+Before designing enemies, decide which traditions and source materials your game will draw from.
+
+Indian mythology is not one single, uniform collection of stories.
+
+It includes multiple traditions, texts, regional narratives, philosophical systems, folk traditions and artistic interpretations.
+
+Your game will be stronger if it has a clearly defined scope.
+
+### Three possible approaches
+
+**Approach A — A specific mythological setting**
+
+Choose a defined tradition, period or group of source stories and build a game world around it.
+
+Advantage: Strong thematic coherence.
+
+Challenge: You need careful research into the source material and its different interpretations.
+
+**Approach B — A fictional realm inspired by Indian traditions**
+
+Create original characters, supernatural powers, enemies and regions inspired by selected architectural, literary, artistic and mythological traditions.
+
+Advantage: Greater creative freedom.
+
+Challenge: The world must feel culturally grounded rather than like a generic fantasy setting with Indian decorations.
+
+**Approach C — A connected mythological universe**
+
+Create a fictional world in which different regions draw inspiration from distinct Indian traditions.
+
+Advantage: Considerable room for expansion.
+
+Challenge: Maintaining consistency and avoiding the flattening of distinct traditions into one generic mythology becomes more difficult.
+
+For an independent project, I would start with **Approach B** unless you already have a specific mythological tradition in mind.
+
+It gives you room to create original mechanics and characters while still conducting serious cultural research.
+
+---
+
+## 22. Turn mythology into gameplay mechanics
+
+The goal is not to reproduce a mythological figure's name on a weapon.
+
+The goal is to identify a meaningful idea, symbol or narrative association and translate it into a coherent gameplay system.
+
+Here are hypothetical examples.
+
+### 22.1 Cyclical transformation
+
+Some Indian philosophical and mythological traditions explore cycles of creation, preservation, destruction and transformation.
+
+You could use the broader idea of transformation to inspire a combat mechanic.
+
+For example, an ability might have three stages:
+1. Establish a state.
+2. Build power through particular actions.
+3. Release that power to produce a stronger effect.
+
+This is a game-design interpretation, not a claim that a particular deity or text describes that exact mechanic.
+
+The mechanical value is that the player learns to manage a cycle instead of repeatedly pressing the same button.
+
+### 22.2 Astral or elemental powers
+
+You could build a system around different supernatural disciplines.
+
+For example:
+
+| Discipline | Possible gameplay identity |
+|---|---|
+| Solar | Direct damage and offensive momentum |
+| Lunar | Resource management and tactical control |
+| Storm | Chain effects and area pressure |
+| Earth | Stability, protection and heavy attacks |
+| Wind | Movement, evasion and rapid repositioning |
+
+These are original design categories, not fixed representations of Indian religious doctrine.
+
+You could use them as a framework for creating different upgrade families.
+
+The important part is ensuring that each discipline produces different gameplay decisions.
+
+### 22.3 Mantra-inspired abilities
+
+You could develop a system of magical techniques inspired by the concept of sacred or repeated utterances, provided the specific cultural material is researched and handled respectfully.
+
+From a gameplay perspective, you might create abilities that require:
+- Maintaining a sequence.
+- Accumulating a resource.
+- Choosing when to release an effect.
+- Timing an activation around enemy behaviour.
+
+The actual names, sounds, symbols and cultural framing should depend on your research.
+
+Avoid treating sacred practices as interchangeable fantasy spells.
+
+### 22.4 Astras as a mechanical design inspiration
+
+Rather than treating every supernatural weapon as a simple projectile, you could use the broader idea of specialised divine or supernatural weaponry to inspire abilities with distinct tactical roles.
+
+For example:
+- An area-denial ability.
+- A piercing projectile.
+- A temporary defensive effect.
+- An ability that disrupts a particular enemy attack.
+- A powerful ability with a meaningful resource cost.
+
+These are proposed gameplay mechanics, not claims about the properties of particular traditional astras.
+
+If you choose to reference a named astra or a specific story, research its source and context before assigning it a new role.
+
+---
+
+## 23. Design enemies from mythological concepts, not just names
+
+The same principle applies to enemies.
+
+A culturally grounded enemy should have a clear relationship between its design, behaviour and place in the world.
+
+Suppose you want to design a large guardian inspired by a mythological creature.
+
+Don't begin with its health pool.
+
+Ask:
+- What makes the creature distinctive in its source material?
+- What visual features should be recognisable?
+- What kind of movement would suit its form?
+- What behaviour would make it mechanically interesting?
+- What does the player need to learn to defeat it?
+- Does the game present the creature as an antagonist, a guardian or something else?
+
+The answers should influence its attack patterns.
+
+### Example: an original guardian encounter
+
+Imagine a fictional stone guardian inspired by temple sculpture.
+
+Its combat identity could be based on weight and structural stability.
+
+It might:
+- Move slowly.
+- Use broad, clearly telegraphed attacks.
+- Create temporary obstacles.
+- Become vulnerable after committing to a powerful strike.
+- Change its attack pattern when its armour is damaged.
+
+This is an original fantasy design.
+
+The visual inspiration and cultural context would need to be researched separately, especially if the guardian incorporates identifiable religious imagery or architectural details.
+
+**The design principle is to make the enemy's visual identity and gameplay identity reinforce each other.**
+
+---
+
+## 24. Visual direction: make the game feel Indian without reducing India to a visual stereotype
+
+This deserves serious attention.
+
+A culturally distinctive game cannot rely solely on a few familiar motifs, ornamental borders and Sanskrit-like names.
+
+Indian art and architecture are diverse, and their styles vary by region, period, materials, religious tradition and intended use.
+
+### Research the specific visual references
+
+Build a reference library around clearly identified sources.
+
+For each reference, record:
+- Its name.
+- Its geographic and historical context.
+- Its materials and construction.
+- Its patterns and ornamentation.
+- Its colour relationships.
+- Its use in the original context.
+- How you intend to adapt it for your game.
+
+For example, if you're drawing inspiration from a particular temple's sculptural style, study that style rather than combining unrelated motifs simply because they look ancient.
+
+You don't need to reproduce a historical site exactly. You do need to understand what you're adapting.
+
+### Develop a coherent visual language
+
+Choose consistent rules for:
+- Character silhouettes.
+- Architectural shapes.
+- Materials.
+- Surface patterns.
+- Colour palettes.
+- Magical effects.
+- Environmental storytelling.
+- UI ornamentation.
+
+A strong visual language makes the game recognisable even when the player doesn't see a named character or read a dialogue box.
+
+### Use original designs
+
+Study reference material, but don't directly reproduce another game's characters, concept art or distinctive assets.
+
+Hades has a very recognisable art direction. Your objective should be to create a similarly cohesive identity, not to recreate its exact character proportions, colour arrangements or interface.
+
+Research into *Raji: An Ancient Epic* is a useful starting point for thinking about the relationship between Indian cultural heritage and video-game aesthetics. [Sage Journals](https://journals.sagepub.com/doi/10.1177/15554120211045143?utm_source=chatgpt.com)
+
+---
+
+## 25. Handle religious and cultural material with care
+
+If you draw from Hindu mythology or living religious traditions, remember that some material has active religious significance for people today.
+
+That doesn't mean you cannot create a mythological action game.
+
+It means that research and design decisions should be deliberate.
+
+I would recommend the following:
+
+**1. Distinguish source material from your interpretation.**
+
+Keep notes about what comes from a text, what comes from a regional tradition and what you invented.
+
+**2. Research different interpretations.**
+
+A character or story may be understood differently across traditions. Avoid presenting one version as the only possible account without justification.
+
+**3. Consider the role of sacred imagery.**
+
+Decide carefully how sacred symbols, rituals, places and figures will be represented in gameplay.
+
+**4. Seek informed feedback.**
+
+Where possible, consult people familiar with the relevant traditions, including historians, researchers, artists and community members.
+
+**5. Avoid relying on visual shorthand.**
+
+Cultural authenticity comes from understanding the material, not simply adding decorative motifs.
+
+**6. Document your decisions.**
+
+Maintain a reference sheet explaining the sources and rationale behind important visual and narrative choices.
+
+This will help keep the project coherent as it grows.
+
+---
+
+# PART 9 — ART, ANIMATION AND VISUAL EFFECTS
+
+## 26. Choose the visual production method before commissioning hundreds of assets
+
+Hades looks two-dimensional from its camera perspective, but reproducing its exact visual pipeline isn't necessary to build a similar kind of game.
+
+There are three broad approaches available.
+
+### Approach A: Hand-drawn 2D sprites
+
+Characters and enemies are drawn as images and animated using frames or skeletal animation.
+
+**Advantages**
+- Strong control over illustration and silhouette.
+- A natural fit for highly stylised artwork.
+- Potentially efficient for a small number of simple characters.
+- Good control over individual animation poses.
+
+**Disadvantages**
+- Every additional animation requires artwork or rigging.
+- Directional movement can require substantial animation work.
+- Detailed character animation can become expensive.
+
+### Approach B: 3D models with an isometric camera
+
+Characters are fully modelled and animated in 3D, but the camera remains elevated and the world is designed around an isometric presentation.
+
+**Advantages**
+- Characters can move in multiple directions without requiring separate hand-drawn frames for every direction.
+- Lighting and shadows can respond to the environment.
+- Animation can be reused and blended.
+- Complex poses can be easier to maintain consistently.
+
+**Disadvantages**
+- Requires modelling, rigging, materials and animation skills.
+- Realistic lighting may conflict with a stylised art direction.
+- Camera and perspective settings require careful tuning.
+
+### Approach C: A hybrid 2.5D approach
+
+Use 3D environments or character models with stylised materials, illustrated textures, carefully controlled lighting and an elevated camera.
+
+This can provide some of the flexibility of 3D while retaining an illustrated appearance.
+
+### My recommendation
+
+If your goal is a polished, Hades-like presentation, I would seriously consider **3D characters and environments with a carefully controlled isometric camera**, particularly if you want complex directional combat and reusable animation.
+
+However, if you are working alone and already have strong 2D art skills, hand-drawn sprites may be more practical.
+
+Do not choose 3D just because it sounds more advanced. Choose the method that lets you produce and maintain the visual quality your project requires.
+
+---
+
+## 27. Camera and composition
+
+The camera determines what the player can see and how easily they can interpret the battlefield.
+
+For an isometric action game, you need to establish:
+
+- Camera angle.
+- Camera distance.
+- Field of view, if using perspective.
+- Camera movement.
+- Whether the camera follows the player exactly or with smoothing.
+- How walls and foreground objects are handled.
+- How characters are sorted visually.
+- How much of the arena remains visible during combat.
+
+### Why camera consistency matters
+
+Imagine that the player is fighting several enemies.
+
+If the camera moves too aggressively, the player's sense of position becomes unstable.
+
+If it is too zoomed in, the player may not see incoming attacks.
+
+If it is too far away, characters and effects may become difficult to read.
+
+You need a camera that provides enough spatial information without making the action feel distant.
+
+### Camera shake
+
+Camera shake can reinforce powerful attacks, impacts and boss abilities.
+
+But excessive shake can obscure important information.
+
+Treat it as an adjustable effect. Important gameplay information should remain readable even when the player takes a powerful hit.
+
+### Arena boundaries
+
+The player should understand the limits of the combat space.
+
+Use consistent visual cues, environmental design and collision rules to make boundaries apparent.
+
+An invisible wall that unexpectedly stops movement can make the game feel broken.
+
+---
+
+## 28. Animation: what you actually need
+
+You don't need hundreds of animations for the first prototype.
+
+You need a small set that covers the main gameplay states.
+
+For the player, start with:
+- Idle.
+- Movement.
+- Basic attack.
+- Special attack.
+- Dodge.
+- Taking damage.
+- Death.
+
+You can add more sophisticated animation later.
+
+For enemies, start with:
+- Idle or movement.
+- Attack preparation.
+- Attack execution.
+- Recovery.
+- Hit reaction.
+- Death.
+
+### Animation must communicate mechanics
+
+The attack animation should tell the player what is happening.
+
+For example, a heavy enemy might visibly shift its weight before performing a powerful strike.
+
+A ranged enemy might raise its arm or weapon before launching a projectile.
+
+A boss might perform a recognisable movement before creating an area hazard.
+
+These animations are part of the game's communication system.
+
+### Avoid animation lock problems
+
+If every attack prevents movement until its animation finishes, combat may feel unresponsive.
+
+If every attack can be cancelled immediately, attacks may lose their sense of commitment.
+
+You need to decide:
+- Which attacks can be cancelled.
+- When movement is allowed during an attack.
+- Whether dodging interrupts an attack.
+- Whether an attack can be interrupted by damage.
+- Whether the player can queue the next action.
+
+These decisions should be consistent across the combat system.
+
+---
+
+## 29. Visual effects: make every effect serve a purpose
+
+Visual effects should communicate gameplay information as well as create spectacle.
+
+You will likely need effects for:
+- Weapon trails.
+- Projectile movement.
+- Impact flashes.
+- Damage-over-time effects.
+- Area warnings.
+- Explosions.
+- Healing.
+- Temporary shields.
+- Status application.
+- Boss phase transitions.
+
+### Three levels of visual information
+
+**Level 1 — Immediate feedback**
+
+What happened when the player attacked?
+
+This includes impact flashes, animation reactions and brief effects.
+
+**Level 2 — Tactical information**
+
+What is happening in the current encounter?
+
+This includes enemy attack warnings, hazardous areas and active status effects.
+
+**Level 3 — Spectacle**
+
+What makes a major moment feel powerful?
+
+This includes boss introductions, large ability effects and major encounter transitions.
+
+These levels should work together without competing for attention.
+
+If every basic attack fills the screen with particles, a boss's major attack may no longer feel distinctive.
+
+### A useful test
+
+Record a busy encounter and watch it without audio.
+
+Can you still understand:
+- Which attacks hit?
+- Which areas are dangerous?
+- Which enemies are preparing attacks?
+- When the player is taking damage?
+- Which effects belong to the player and which belong to enemies?
+
+If not, simplify or differentiate the visual effects.
+
+---
+
+# PART 10 — AUDIO AND GAME FEEL
+
+## 30. Sound is part of the combat system
+
+Audio is not merely something you add after the gameplay is finished.
+
+It helps players recognise events and understand timing.
+
+For your prototype, prioritise sounds for:
+- Player attacks.
+- Successful hits.
+- Enemy attacks.
+- Dodge activation.
+- Taking damage.
+- Enemy death.
+- Reward selection.
+- Boss transitions.
+
+You can add environmental ambience and music later.
+
+### 30.1 Distinguish sound by function
+
+A basic attack should sound different from a heavy attack.
+
+An enemy warning should be distinguishable from an ordinary movement sound.
+
+A successful defensive action might have its own short audio cue.
+
+This helps the player understand the combat even when the screen is busy.
+
+### 30.2 Layer your audio
+
+A powerful attack might combine:
+- A short attack sound.
+- A low-frequency impact.
+- A brief effect tied to the weapon's material.
+- A secondary sound when the attack triggers a special effect.
+
+The sounds should work together rather than becoming one loud, indistinct effect.
+
+### 30.3 Music and adaptive intensity
+
+You don't need an elaborate dynamic soundtrack for the first version.
+
+Start with a small number of music states:
+- Exploration.
+- Standard combat.
+- Boss combat.
+- Victory.
+- Defeat.
+
+You can later add transitions or layers that respond to combat intensity.
+
+### 30.4 Cultural sound design
+
+If you use Indian musical instruments, vocal styles or musical traditions, research their appropriate context.
+
+Do not assume that adding a tabla or a particular scale automatically makes the soundtrack culturally authentic.
+
+Work with musicians who understand the musical traditions you want to reference, particularly if the soundtrack becomes a major part of the game's identity.
+
+---
+
+# PART 11 — GAME ENGINE AND PROGRAMMING ARCHITECTURE
+
+## 31. Which engine should you use?
+
+The two engines I would seriously consider are Godot and Unity.
+
+Both support the kinds of systems required for a top-down or isometric action roguelite.
+
+Godot provides dedicated 2D rendering, physics, animation and navigation features. Unity supports 2D sprites, Tilemaps, physics, animation, lighting and a broader 3D development pipeline. [Godot Engine documentation](https://docs.godotengine.org/en/latest/tutorials/2d/index.html?utm_source=chatgpt.com)
+
+### Godot
+
+Official resources: [Godot Engine documentation](https://docs.godotengine.org/en/stable/?utm_source=chatgpt.com)
+
+Godot is worth considering if:
+- You want to build a 2D game.
+- You prefer a relatively lightweight engine.
+- You want an integrated scene and scripting workflow.
+- You're comfortable learning GDScript or using C#.
+
+Its scene-based architecture can be useful for organising reusable rooms, enemies and gameplay components.
+
+### Unity
+
+Official resources: [Unity 2D documentation](https://docs.unity.com/en-us/engine/7000.0/manual/unity2d?utm_source=chatgpt.com)
+
+Unity is worth considering if:
+- You want to work with 3D models and an isometric camera.
+- You prefer C#.
+- You want access to a large ecosystem of tools and learning materials.
+- You may need more advanced 3D rendering or animation workflows.
+
+Unity's official workflow covers fundamentals, scripting, sprites, environment construction, animation, graphics, physics, audio, UI, optimisation and publishing. [Unity Docs](https://docs.unity.com/en-us/engine/6000.6/manual/unity2d/2d-game-development/2d-game-creation-wokflow?utm_source=chatgpt.com)
+
+### My recommendation
+
+| Your situation | My recommendation |
+|---|---|
+| Solo developer, mostly 2D | Start by evaluating Godot |
+| Solo developer, 3D models and isometric camera | Evaluate Unity and Godot's 3D capabilities |
+| Team already experienced with Unity | Use Unity |
+| Team already experienced with Godot | Use Godot |
+| Still learning programming | Choose one engine and complete a small project before switching |
+
+There is no universal winner.
+
+The best engine is the one your team can use reliably to build, test and ship the game.
+
+---
+
+## 32. Organise your code into systems
+
+Do not put the entire game into one enormous player script.
+
+Separate the systems according to their responsibilities.
+
+A useful architecture might contain:
+
+**Player controller**
+- Movement.
+- Dodge.
+- Facing direction.
+- Input handling.
+
+**Combat system**
+- Attack execution.
+- Hit detection.
+- Damage resolution.
+- Hit reactions.
+
+**Ability system**
+- Active abilities.
+- Cooldowns or resource costs.
+- Ability effects.
+
+**Enemy system**
+- Enemy state machines.
+- Movement and targeting.
+- Attack selection.
+- Death.
+
+**Run manager**
+- Current run state.
+- Room progression.
+- Rewards.
+- Boss progression.
+
+**Generation system**
+- Room selection.
+- Encounter selection.
+- Reward placement.
+
+**Progression system**
+- Permanent resources.
+- Unlocks.
+- Persistent upgrades.
+
+**UI system**
+- Health and resource indicators.
+- Reward choices.
+- Pause menu.
+- Run summary.
+
+**Audio and effects system**
+- Sound playback.
+- Visual effect spawning.
+- Combat feedback.
+
+These systems should communicate through clear interfaces.
+
+For example, an enemy shouldn't need to know how the reward menu is implemented in order to produce a reward when it dies.
+
+The run manager can respond to an encounter-completion event and activate the appropriate reward logic.
+
+### Why modular architecture matters
+
+Suppose you later change how damage is calculated.
+
+If every enemy, weapon and ability contains its own unrelated damage formula, you must update all of them.
+
+If they all use a shared damage-resolution system, the change is much easier to maintain.
+
+Modularity reduces duplicated logic and makes balancing safer.
+
+---
+
+## 33. Use data-driven design
+
+This is one of the highest-value architectural decisions you can make.
+
+**Separate the definition of an item from the code that executes it.**
+
+Consider a weapon.
+
+Its data might include:
+- Weapon name.
+- Base damage.
+- Attack range.
+- Attack duration.
+- Recovery time.
+- Resource cost.
+- Associated animation.
+- Associated sound.
+- Special ability identifier.
+
+The combat system reads those values and executes the weapon's behaviour.
+
+You can then change weapon damage without rewriting the controller.
+
+The same principle applies to enemies, Boons, upgrades and rooms.
+
+### Example: an enemy definition
+
+```text
+Enemy ID: Heavy_Guardian
+
+Max Health: 100
+Movement Speed: 2.0
+Detection Range: 8.0
+
+Attack:
+    Damage: 20
+    Range: 2.5
+    Startup: Configurable
+    Recovery: Configurable
+
+Rewards:
+    Resource Type: Standard
+```
+
+The numbers here are illustrative. They are not a recommendation for final balance.
+
+The key is that the enemy's configuration is separate from the reusable systems that move, animate and damage it.
+
+### Data-driven upgrades
+
+You can also define upgrades using structured data.
+
+For example:
+
+```text
+Upgrade ID: Marked_Target
+
+Trigger:
+    OnHit
+
+Condition:
+    TargetHasStatus(Marked)
+
+Effect:
+    ApplyBonusDamage
+
+Parameters:
+    BonusDamage: Configurable
+```
+
+This is pseudocode, not a ready-to-run implementation.
+
+For simple upgrades, a data-driven approach can make the game much easier to balance.
+
+For complex upgrades that introduce entirely new behaviour, you may need custom logic.
+
+A practical system supports both.
+
+---
+
+# PART 12 — HOW TO IMPLEMENT THE RUN SYSTEM
+
+## 34. Create a run manager
+
+The run manager coordinates everything that happens during a run.
+
+It should know:
+- Which region the player is in.
+- Which room is active.
+- Which rooms have been completed.
+- Which rewards are available.
+- Which upgrades the player has acquired.
+- Whether the player is alive.
+- Whether the boss has been defeated.
+- Whether the run has ended.
+
+It should not be responsible for every detail of combat.
+
+Its job is to coordinate the run, not replace the player controller or enemy AI.
+
+### A simple run-state model
+
+```text
+RUN_START
+    ↓
+ROOM_LOADING
+    ↓
+COMBAT_ACTIVE
+    ↓
+ENCOUNTER_COMPLETE
+    ↓
+REWARD_SELECTION
+    ↓
+NEXT_ROOM
+    ↓
+BOSS_ENCOUNTER
+    ↓
+RUN_COMPLETE
+```
+
+Defeat can lead to a separate run-ending state.
+
+Each transition should have a clear condition.
+
+For example, the encounter becomes complete when all required enemies have been defeated and any encounter-specific conditions have been satisfied.
+
+The reward screen should not appear simply because the last enemy disappeared if the encounter also requires the player to activate an object or survive a timed phase.
+
+## 35. Separate run data from permanent data
+
+You should maintain two distinct categories of saved information.
+
+### Current-run data
+
+This might include:
+- Current health.
+- Current Magick or other combat resource.
+- Current weapon configuration.
+- Temporary upgrades.
+- Current region and room.
+- Current run rewards.
+- Enemies defeated during the run.
+
+### Persistent profile data
+
+This might include:
+- Permanently unlocked weapons.
+- Permanent upgrades.
+- Retained resources.
+- Unlocked regions.
+- Discovered items.
+- Settings and accessibility preferences.
+
+When the run ends, the game resolves the current-run data into the appropriate permanent rewards and clears temporary data.
+
+This prevents a common problem: temporary upgrades accidentally surviving into the next run.
+
+### Saving safely
+
+For a prototype, you can save a small structured profile.
+
+As the game grows, consider:
+- Save-file versioning.
+- Validation of loaded data.
+- Handling missing or outdated fields.
+- Safe handling of interrupted saves.
+- Separating user settings from gameplay progress.
+
+You do not need a complex cloud-save system for your first prototype.
+
+You do need to avoid losing the player's permanent progress when the game closes unexpectedly.
+
+---
+
+# PART 13 — BALANCING AND PLAYTESTING
+
+## 36. Balancing is a process, not a one-time calculation
+
+You cannot reliably balance an action roguelite entirely by looking at spreadsheets.
+
+Mathematical models are useful, but real combat produces interactions that are difficult to predict.
+
+A damage upgrade might appear modest on paper yet become extremely powerful when combined with a rapid weapon and a status effect.
+
+An enemy may seem easy when tested alone but become overwhelming when paired with a ranged attacker.
+
+This is why you need repeated playtesting.
+
+### 36.1 Measure more than win rate
+
+Track:
+- How often players complete a run.
+- How much health remains after encounters.
+- How often players take damage from each enemy.
+- How often a particular upgrade is selected.
+- How frequently players use each ability.
+- Which encounters cause repeated failures.
+- Which builds dominate.
+- How long players spend in a run.
+- Where players abandon a run or stop playing.
+
+These measurements help identify problems, but they don't explain everything.
+
+For example, an upgrade may have a high selection rate because it is powerful, or because its description is easier to understand than the alternatives.
+
+You need to observe players and ask why they made particular decisions.
+
+### 36.2 Use a balance spreadsheet
+
+For every weapon, record:
+- Base damage.
+- Attack rate.
+- Attack range.
+- Recovery duration.
+- Resource cost.
+- Expected damage against a standard enemy.
+- Performance against multiple enemies.
+- Performance against bosses.
+
+For each enemy, record:
+- Health.
+- Damage.
+- Movement speed.
+- Attack range.
+- Attack startup.
+- Recovery duration.
+- Behavioural complexity.
+
+This provides a shared reference for balancing.
+
+### 36.3 Compare damage over time carefully
+
+A weapon with high damage per hit may deal less damage over time than a fast weapon.
+
+A simple theoretical estimate is:
+
+\[
+\text{DPS}=
+\frac{\text{Damage per hit}}{\text{Time between attacks}}
+\]
+
+But this calculation ignores several important factors:
+- Missed attacks.
+- Time spent repositioning.
+- Enemy movement.
+- Attack recovery.
+- Damage modifiers.
+- Invulnerability windows.
+- Overkill damage.
+
+For your game, theoretical DPS should be treated as a starting point.
+
+Actual encounter performance matters more.
+
+### 36.4 Test the extremes
+
+For every important system, test:
+- The weakest plausible build.
+- The strongest plausible build.
+- A build that focuses on one mechanic.
+- A build that combines several mechanics.
+- A player who understands the game well.
+- A player who is learning it.
+
+You want the game to remain understandable and enjoyable across different levels of skill.
+
+### 36.5 Build an internal test arena
+
+Create a simple room where you can spawn enemies, change weapons, select upgrades and adjust values.
+
+This will make development significantly faster.
+
+Without a test arena, you may need to start an entire run just to test a change to a weapon.
+
+Your test arena should eventually support:
+- Spawning any enemy.
+- Changing enemy health.
+- Switching weapons.
+- Applying upgrades.
+- Resetting the encounter.
+- Displaying combat statistics.
+
+This is a developer tool, not a feature that needs to appear in the final game.
+
+---
+
+# PART 14 — THE MOST IMPORTANT DESIGN MISTAKES TO AVOID
+
+## 37. Building too much before the combat works
+
+This is the biggest risk for your project.
+
+You might want:
+- Ten regions.
+- Twenty weapons.
+- Fifty enemies.
+- Several bosses.
+- Hundreds of upgrades.
+- Elaborate mythology.
+- A huge crafting system.
+- Multiple progression currencies.
+
+Those ideas are exciting, but they create enormous amounts of work.
+
+If the basic combat is not satisfying, all that additional content will be built on an unstable foundation.
+
+**Do not build a large game first. Build a small version of the game you want to make, then expand it.**
+
+## 38. Making every upgrade increase damage
+
+If most upgrades simply increase damage by a percentage, players may eventually feel that the system offers many choices but few genuinely different strategies.
+
+Use a mixture of direct improvements, behaviour changes, synergies and utility.
+
+Every upgrade doesn't need to be revolutionary, but the overall system should create meaningful decisions.
+
+## 39. Making randomness the source of difficulty
+
+Randomness can create variety, but it should not make the game unfair.
+
+The room generator should not produce encounters that the player's current build cannot reasonably handle.
+
+Reward selection should not consistently force players into useless options.
+
+The game can challenge players without guaranteeing that every run is equally strong.
+
+## 40. Giving bosses enormous health instead of better mechanics
+
+A boss with a huge health bar is not automatically a difficult or interesting boss.
+
+A better encounter tests movement, timing, target selection or resource management.
+
+Longer fights should introduce meaningful changes rather than simply repeating the same attack sequence.
+
+## 41. Making permanent progression too powerful
+
+Permanent upgrades can help new players learn the game, but if they remove too much of the challenge, the combat may eventually become trivial.
+
+You should decide which progression systems improve consistency and which systems fundamentally increase power.
+
+The right balance depends on the experience you want to create.
+
+## 42. Copying Hades too closely
+
+Study its underlying systems, not just its visible features.
+
+For example, you can learn from:
+- Its room-based progression.
+- Its combination of temporary and permanent upgrades.
+- Its weapon differentiation.
+- Its enemy telegraphs.
+- Its repeated-run structure.
+- Its use of a central hub.
+
+But your game's combat, visual language, mechanics and cultural identity should be your own.
+
+A useful test is to remove all the mythology-specific names from your design document.
+
+If the remaining game still reads as almost exactly Hades, you probably need a more distinctive mechanical identity.
+
+## 43. Overcomplicating the first version
+
+A large number of systems creates a large number of interactions to debug and balance.
+
+Start with a few well-developed mechanics.
+
+A game with one excellent weapon, five interesting enemies and one well-designed boss is a better prototype than a game with twenty incomplete weapons and dozens of enemies that all behave similarly.
+
+---
+
+# PART 15 — A REALISTIC DEVELOPMENT ROADMAP
+
+## 44. Phase 1: Build a combat prototype
+
+**Goal: prove that moving and fighting feels good.**
+
+Do not begin with your entire mythological world.
+
+Build one room with:
+- A controllable character.
+- One basic attack.
+- One dodge.
+- One enemy.
+- Health and damage.
+- A basic death and restart system.
+
+Use placeholder artwork if necessary.
+
+At this stage, your priorities are:
+- Movement responsiveness.
+- Attack timing.
+- Hit detection.
+- Collision behaviour.
+- Clear combat feedback.
+
+### Completion test
+
+Give the prototype to another person.
+
+Can they move, attack, dodge and understand when they have been hit without extensive explanation?
+
+Does the combat feel satisfying after several minutes?
+
+If not, keep working on the controller and attack system.
+
+Do not proceed to a complicated progression system just because the basic prototype feels unfinished.
+
+## 45. Phase 2: Build a complete combat encounter
+
+**Goal: prove that the game can produce interesting combat.**
+
+Add:
+- Two or three enemy archetypes.
+- A simple enemy AI system.
+- Enemy attack telegraphs.
+- Several attack types.
+- Basic hit reactions.
+- A complete room-completion condition.
+- A reward after victory.
+
+Test different combinations of enemies.
+
+Can the player handle the encounters through different tactics?
+
+Can you create difficulty by changing the enemy combination rather than merely increasing health?
+
+## 46. Phase 3: Build the first complete run
+
+**Goal: prove that the game loop works.**
+
+Add:
+- Several handcrafted rooms.
+- A basic room-selection system.
+- A small upgrade pool.
+- A reward-selection interface.
+- A boss encounter.
+- Run completion and defeat.
+- A simple persistent resource.
+
+At this point, a player should be able to start a run, fight through several encounters, obtain upgrades, defeat a boss or lose, and start again.
+
+That is your first genuine roguelite prototype.
+
+## 47. Phase 4: Add meaningful build variety
+
+**Goal: make repeated runs feel different.**
+
+Introduce:
+- A second weapon.
+- More upgrade combinations.
+- A small set of status effects.
+- Several reward categories.
+- A few permanent unlocks.
+
+Now test whether the weapons and builds create different strategies.
+
+If every successful run uses the same combination of upgrades, investigate why.
+
+## 48. Phase 5: Build the first vertical slice
+
+A vertical slice is a small, polished section of the game that demonstrates the intended quality of the final product.
+
+It is not simply a large prototype.
+
+For your game, a vertical slice might contain:
+- One playable character.
+- Two distinct weapons.
+- Five enemy archetypes.
+- One elite encounter.
+- One complete boss fight.
+- A small collection of rooms.
+- A handful of meaningful upgrades.
+- One persistent progression system.
+- A cohesive visual style.
+- A small but polished soundscape.
+
+The vertical slice should show what playing the finished game could feel like.
+
+It is also useful for evaluating whether your art style, production workflow and combat systems are practical to maintain.
+
+## 49. Phase 6: Expand content systematically
+
+Only after the vertical slice works should you begin expanding the content.
+
+Add new weapons when they introduce a meaningful combat identity.
+
+Add enemies when they introduce a new tactical problem.
+
+Add regions when they provide distinct environments and encounter possibilities.
+
+Add bosses when they test skills that the player has learned throughout the game.
+
+Add progression systems when they improve meaningful decisions.
+
+The guiding principle is simple:
+
+**Expand the game's possibilities, not merely its quantity of content.**
+
+---
+
+# PART 16 — YOUR FIRST PLAYABLE BUILD
+
+If I were directing the project, I would define the first playable version as follows.
+
+## Prototype specification
+
+| System | First version |
+|---|---|
+| Camera | Fixed elevated camera |
+| Player | One playable character |
+| Movement | Directional movement with collision |
+| Dodge | One evasive action with defined timing |
+| Weapons | One melee weapon |
+| Player abilities | Basic attack and one special attack |
+| Enemies | Chaser, ranged attacker and heavy attacker |
+| Bosses | One boss with three or four distinct attacks |
+| Rooms | Five handcrafted combat rooms |
+| Rewards | Three to five upgrade types |
+| Run structure | A short sequence of encounters ending in a boss |
+| Persistence | One permanent resource or unlock |
+| Art | Placeholder visuals initially, followed by one coherent art pass |
+| Audio | Basic attack, hit, dodge and enemy attack sounds |
+| Saving | Persistent profile and settings |
+| Testing | Internal arena and basic combat statistics |
+
+This is deliberately small.
+
+It is large enough to test the central systems without forcing you to build an entire commercial game before learning whether those systems work.
+
+### What counts as success?
+
+The prototype succeeds if:
+- Movement feels responsive.
+- Attacks reliably hit the intended targets.
+- Enemy attacks are understandable.
+- The boss requires learning rather than random luck.
+- Rewards create at least a few interesting choices.
+- A second run feels meaningfully different from the first.
+- You can change values without breaking unrelated systems.
+
+If those conditions are met, you have a foundation worth expanding.
+
+---
+
+# PART 17 — HOW TO LEARN FROM THE DEVELOPMENT OF HADES
+
+## 50. Study how the game was actually developed
+
+Supergiant's official development documentary, *Developing Hell*, follows the creation of Hades through its development and Early Access period.
+
+The studio has explained that Early Access allowed it to develop the game alongside player feedback, and that the game's modular structure supported this process. [Supergiant Games](https://www.supergiantgames.com/blog/hades-noclip-bluray/?utm_source=chatgpt.com)
+
+I strongly recommend studying that development process rather than relying exclusively on gameplay videos.
+
+Official resource: [Developing Hell — Supergiant Games](https://www.supergiantgames.com/blog/hades-noclip-bluray/?utm_source=chatgpt.com)
+
+Pay particular attention to:
+- How the team approached iterative development.
+- How gameplay systems were expanded.
+- How the game changed during development.
+- How art, music and programming supported the same design goals.
+- How the team evaluated what to add or change.
+
+### Why this matters
+
+The finished game can make its systems appear inevitable.
+
+But development involves experimentation, rejected ideas, revisions and compromises.
+
+Understanding that process is useful because you will face the same general problems, even if your project is much smaller.
+
+## 51. Study Hades II's development as well
+
+Hades II provides another useful lesson: a successful sequel can expand an established formula while still requiring substantial iteration.
+
+The developers have discussed how player feedback during Early Access influenced the game's systems and how they approached changes to mechanics over time. [GamesRadar+](https://www.gamesradar.com/games/hades/weve-learned-to-love-and-trust-the-process-how-hades-2-built-on-supergiants-early-access-legacy-to-deliver-the-best-roguelike-of-2025/?utm_source=chatgpt.com)
+
+Official resource: [Hades II development updates and announcements](https://www.supergiantgames.com/blog/?utm_source=chatgpt.com)
+
+Don't interpret this as a reason to release an unfinished game immediately.
+
+The lesson is that important design decisions should be tested, and developers should be willing to change systems that aren't working.
+
+---
+
+# PART 18 — RESEARCH LIBRARY FOR YOUR GAME
+
+These are the resources I'd keep bookmarked throughout development.
+
+I've prioritised official engine documentation, the developers' own material and research that directly relates to your project.
+
+## A. Learn from Hades
+
+**1. [Official Hades FAQ](https://www.supergiantgames.com/blog/hades-faq/?utm_source=chatgpt.com)**
+
+Start here for the developers' explanation of the genre, progression, difficulty and design goals.
+
+**2. [Developing Hell documentary information](https://www.supergiantgames.com/blog/hades-noclip-bluray/?utm_source=chatgpt.com)**
+
+Study the production process behind Hades, including its Early Access development.
+
+**3. [Hades II official FAQ](https://www.supergiantgames.com/blog/hades2-faq/?utm_source=chatgpt.com)**
+
+Use this to understand the sequel's expanded mechanics, progression and world structure.
+
+## B. Learn game development
+
+**4. [Godot's official 2D documentation](https://docs.godotengine.org/en/latest/tutorials/2d/index.html?utm_source=chatgpt.com)**
+
+Useful for movement, animation, rendering, collision, particles and other 2D systems.
+
+**5. [Unity's official 2D documentation](https://docs.unity.com/en-us/engine/7000.0/manual/unity2d?utm_source=chatgpt.com)**
+
+Useful if you're considering Unity for a 2D or hybrid 2.5D game.
+
+**6. [Unity's 2D game development workflow](https://docs.unity.com/en-us/engine/6000.6/manual/unity2d/2d-game-development/2d-game-creation-wokflow?utm_source=chatgpt.com)**
+
+A useful overview of how the major parts of a 2D development pipeline fit together.
+
+## C. Learn about Indian mythology in games
+
+**7. [How Not to Play an Indian Mythic: Raji: A Modern Fantasy](https://cyberorient.net/2023/12/22/how-not-to-play-an-indian-mythicraji-a-modern-fantasy/?utm_source=chatgpt.com)**
+
+This academic article examines the relationship between Indian mythology, cultural representation, game mechanics and aesthetics.
+
+**8. [Video Game Development in India: A Cultural and Creative Industry Embracing Regional Cultural Heritage(s)](https://journals.sagepub.com/doi/10.1177/15554120211045143?utm_source=chatgpt.com)**
+
+Useful for thinking about how regional cultural heritage can influence game design and presentation.
+
+These resources will not replace primary-source research into the particular traditions you choose to use, but they provide a strong starting point.
+
+---
+
+# PART 19 — MY RECOMMENDATION FOR YOUR PROJECT
+
+Here is the direction I would take if I were planning the game's development.
+
+### Design goal
+
+Create an original Indian mythology-inspired action roguelite with:
+- Responsive isometric combat.
+- Distinct weapon archetypes.
+- A combination of active abilities and passive upgrades.
+- Enemies with readable, differentiated attack patterns.
+- Handcrafted rooms assembled into varied runs.
+- A small number of meaningful permanent upgrades.
+- A distinctive visual identity grounded in researched Indian artistic traditions.
+
+### Development priorities
+
+I would rank your priorities in this order:
+
+1. **Movement and combat feel.**
+2. **Enemy AI and attack readability.**
+3. **Weapon differentiation.**
+4. **Boss encounter design.**
+5. **Reward and upgrade combinations.**
+6. **Room generation and run progression.**
+7. **Permanent progression and saving.**
+8. **Visual and audio polish.**
+9. **Content expansion.**
+
+Art and audio shouldn't be ignored until the end; they should develop alongside the game. However, avoid producing large quantities of final assets before you know what the mechanics require.
+
+### Your first milestone
+
+Build one character, one weapon, three enemy types and one arena.
+
+Make that encounter genuinely enjoyable.
+
+Then add a boss.
+
+Then add rewards.
+
+Then connect several rooms into a run.
+
+Then introduce persistent progression.
+
+Only after that should you begin expanding the world substantially.
+
+This approach reduces the risk of spending months creating assets for mechanics that eventually need to be redesigned.
+
+---
+
+## One final thing I need you to understand
+
+**Hades is not successful merely because it has weapons, gods, bosses and roguelike progression. It is successful because those systems reinforce one another.**
+
+The weapon changes how you fight. Your upgrades change how the weapon behaves. Your enemies challenge your chosen strategy. Your rooms influence your movement. Your rewards influence your next encounter. Your next run gives you another opportunity to experiment.
+
+That interconnected design is what you should aim to reproduce at the level of principles.
+
+Your Indian mythology setting can provide a distinctive identity, but your combat system needs to stand on its own.
+
+And you do not need to build the entire game to discover whether that system works.
+
+**Build the smallest version that captures the experience you want, test it, improve it, and expand only when the existing version deserves to become bigger.**
+
+That is the foundation I'd use for your project.

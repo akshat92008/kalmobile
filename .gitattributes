@@ -1,0 +1,7 @@
+untitled.zip filter=lfs diff=lfs merge=lfs -text
+untitled.zip.* filter=lfs diff=lfs merge=lfs -text
+untitled[[:space:]](2).zip filter=lfs diff=lfs merge=lfs -text
+kaliyuga-repository-audit-*.zip filter=lfs diff=lfs merge=lfs -text
+kaalyuga-main*.zip filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
+screen[[:space:]]test/* filter=lfs diff=lfs merge=lfs -text
