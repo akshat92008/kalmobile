@@ -436,21 +436,9 @@ export default function KaliyugaArena() {
   const [preloadProgress, setPreloadProgress] = useState<number>(18);
   const [cameraPreset, setCameraPreset] = useState<HadesCameraPreset>('dynamic_action');
   const [enemyRenderMode, setEnemyRenderMode] = useState<EnemyRenderMode>('hybrid_2d_3d');
-  const [isMobile, setIsMobile] = useState<boolean>(true);
+  const [showMobileControls, setShowMobileControls] = useState<boolean>(true);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(
-        typeof window !== 'undefined' &&
-          ('ontouchstart' in window ||
-            navigator.maxTouchPoints > 0 ||
-            window.innerWidth <= 1024)
-      );
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+
 
   // Path A Stylized Hybrid Pipeline — 60FPS 3D Animated Rudra + Hand-Painted 2D Enemy & Boss Horde
   useEffect(() => {
@@ -4249,6 +4237,34 @@ export default function KaliyugaArena() {
       );
     }
   }, [damagePropsNearPoint, spawnAfterimage, spawnFloatingText, spawnParticles, spawnShockwave]);
+
+  const handleTogglePause = useCallback(() => {
+    const sim = simRef.current;
+    if (partyModalOpen) {
+      setPartyModalOpen(false);
+      return;
+    }
+    if (shrineOpen) {
+      setShrineOpen(false);
+      return;
+    }
+    if (storyOpen) {
+      setStoryOpen(false);
+      return;
+    }
+    if (sim.state === 'playing') {
+      sim.state = 'paused';
+      document.body.dataset.state = 'paused';
+      setGameState('paused');
+      setOutcomeMode('paused');
+      sim.input.keysHeld.clear();
+    } else if (sim.state === 'paused') {
+      sim.state = 'playing';
+      document.body.dataset.state = 'playing';
+      setGameState('playing');
+      setOutcomeMode('none');
+    }
+  }, [partyModalOpen, shrineOpen, storyOpen]);
 
   // Global keyboard & window focus listeners
   useEffect(() => {
@@ -9857,17 +9873,19 @@ export default function KaliyugaArena() {
         }}
       />
 
-      {/* Mobile Virtual Joystick & Action Diamond Cluster Controls */}
+      {/* Mobile Virtual Joystick & PlayStation / PSP Console Controls */}
       <MobileControls
         visible={
-          isMobile &&
-          gameState === 'playing' &&
+          showMobileControls &&
+          (gameState === 'playing' || gameState === 'title') &&
           outcomeMode === 'none' &&
           !boonModalOpen &&
           !shrineOpen &&
           !storyOpen &&
           !partyModalOpen
         }
+        gameState={gameState}
+        onStartGame={() => startGameAtChamber(0)}
         callbacks={{
           onMoveJoystick: (dx, dy) => {
             simRef.current.input.touchMoveX = dx;
@@ -9885,6 +9903,8 @@ export default function KaliyugaArena() {
           onSpecial: triggerRedTidesTransform,
           onMirage: triggerLookOrMirage,
           onSwitchStance: triggerSwitchStance,
+          onSelect: () => setStoryOpen(true),
+          onStart: handleTogglePause,
         } satisfies MobileControlsCallbacks}
       />
     </main>
