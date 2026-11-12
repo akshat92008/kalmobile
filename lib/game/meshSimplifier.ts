@@ -14,13 +14,198 @@ import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { IS_SOFTWARE_WEBGL } from '../../engine/ue5GraphicsEngine';
 
-export function loadFbxCached(url: string, _unusedShared = false): Promise<THREE.Group> {
+// Disabled .skinned.bin overrides so all characters and weapons use their true FBX geometry & 1:1 UV maps
+const LITE_SKINNED_BIN_MAP: Record<string, string> = {};
+
+interface FloatChunkRef {
+  offsetFloats: number;
+  lenFloats: number;
+}
+
+interface SkinnedBinHeader {
+  isStaticMesh?: boolean;
+  vertexCount?: number;
+  nodes: Array<{
+    name: string;
+    kind: 'Group' | 'Bone' | 'SkinnedMesh' | string;
+    parentIdx: number;
+    pos: [number, number, number];
+    quat: [number, number, number, number];
+    scale: [number, number, number];
+  }>;
+  skinnedMeshNodeIdx: number;
+  bindMode: THREE.BindMode;
+  bindMatrix: number[];
+  bindMatrixInverse: number[];
+  boneNodeIndices: number[];
+  boneInverses: number[][];
+  geo: {
+    vertexCount: number;
+    pos: FloatChunkRef;
+    norm: FloatChunkRef;
+    uv: FloatChunkRef;
+    skinIndex: FloatChunkRef;
+    skinWeight: FloatChunkRef;
+  };
+  animations: Array<{
+    name: string;
+    duration: number;
+    tracks: Array<{
+      name: string;
+      type: 'vector' | 'quaternion';
+      times: FloatChunkRef;
+      values: FloatChunkRef;
+    }>;
+  }>;
+}
+
+const skinnedBinBufferCache = new Map<string, Promise<ArrayBuffer>>();
+
+function buildGroupFromSkinnedBinBuffer(buf: ArrayBuffer): THREE.Group {
+  const dv = new DataView(buf);
+  const headerLen = dv.getUint32(0, true);
+  const headerBytes = new Uint8Array(buf, 4, headerLen);
+  const headerJson = new TextDecoder().decode(headerBytes);
+  const header = JSON.parse(headerJson) as SkinnedBinHeader;
+
+  const binOffset = (4 + headerLen + 3) & ~3;
+  const f32 = new Float32Array(buf, binOffset);
+
+  if (header.isStaticMesh && header.vertexCount) {
+    const vCount = header.vertexCount;
+    const posLen = vCount * 3;
+    const normLen = vCount * 3;
+    const uvLen = vCount * 2;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(f32.slice(0, posLen), 3));
+    geo.setAttribute(
+      'normal',
+      new THREE.Float32BufferAttribute(f32.slice(posLen, posLen + normLen), 3)
+    );
+    geo.setAttribute(
+      'uv',
+      new THREE.Float32BufferAttribute(f32.slice(posLen + normLen, posLen + normLen + uvLen), 2)
+    );
+    geo.computeBoundingBox();
+    geo.computeBoundingSphere();
+
+    const mesh = new THREE.Mesh(
+      geo,
+      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.55, metalness: 0.45 })
+    );
+    mesh.frustumCulled = false;
+    const group = new THREE.Group();
+    group.add(mesh);
+    group.updateMatrixWorld(true);
+    return group;
+  }
+
+  const sliceChunk = (ref: FloatChunkRef): Float32Array =>
+    f32.slice(ref.offsetFloats, ref.offsetFloats + ref.lenFloats);
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(sliceChunk(header.geo.pos), 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(sliceChunk(header.geo.norm), 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(sliceChunk(header.geo.uv), 2));
+  geo.setAttribute('skinIndex', new THREE.Float32BufferAttribute(sliceChunk(header.geo.skinIndex), 4));
+  geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(sliceChunk(header.geo.skinWeight), 4));
+  geo.computeBoundingBox();
+  geo.computeBoundingSphere();
+
+  const createdNodes: THREE.Object3D[] = header.nodes.map((nDef, idx) => {
+    let obj: THREE.Object3D;
+    if (idx === header.skinnedMeshNodeIdx || nDef.kind === 'SkinnedMesh') {
+      const sm = new THREE.SkinnedMesh(
+        geo,
+        new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.85, metalness: 0.08 })
+      );
+      sm.frustumCulled = false;
+      obj = sm;
+    } else if (nDef.kind === 'Bone') {
+      obj = new THREE.Bone();
+    } else {
+      obj = new THREE.Group();
+    }
+    obj.name = nDef.name;
+    obj.position.fromArray(nDef.pos);
+    obj.quaternion.fromArray(nDef.quat);
+    obj.scale.fromArray(nDef.scale);
+    return obj;
+  });
+
+  let rootGroup: THREE.Group | null = null;
+  for (let i = 0; i < header.nodes.length; i++) {
+    const pIdx = header.nodes[i].parentIdx;
+    if (pIdx >= 0 && pIdx < createdNodes.length) {
+      createdNodes[pIdx].add(createdNodes[i]);
+    } else if (!rootGroup) {
+      rootGroup = createdNodes[i] as THREE.Group;
+    }
+  }
+  if (!rootGroup) {
+    rootGroup = new THREE.Group();
+  }
+
+  const bones: THREE.Bone[] = header.boneNodeIndices.map((idx) => createdNodes[idx] as THREE.Bone);
+  const boneInverses: THREE.Matrix4[] = header.boneInverses.map((arr) =>
+    new THREE.Matrix4().fromArray(arr)
+  );
+  const skeleton = new THREE.Skeleton(bones, boneInverses);
+
+  const skinnedMesh = createdNodes[header.skinnedMeshNodeIdx] as THREE.SkinnedMesh | undefined;
+  if (skinnedMesh && skinnedMesh.isSkinnedMesh) {
+    skinnedMesh.bindMode = header.bindMode || 'attached';
+    const bindMat = new THREE.Matrix4().fromArray(header.bindMatrix);
+    skinnedMesh.bind(skeleton, bindMat);
+    skinnedMesh.bindMatrixInverse.fromArray(header.bindMatrixInverse);
+  }
+
+  rootGroup.updateMatrixWorld(true);
+
+  const clips: THREE.AnimationClip[] = [];
+  for (const clipDef of header.animations || []) {
+    const tracks: THREE.KeyframeTrack[] = [];
+    for (const tDef of clipDef.tracks) {
+      const times = sliceChunk(tDef.times);
+      const values = sliceChunk(tDef.values);
+      if (tDef.type === 'quaternion') {
+        tracks.push(new THREE.QuaternionKeyframeTrack(tDef.name, times, values));
+      } else {
+        tracks.push(new THREE.VectorKeyframeTrack(tDef.name, times, values));
+      }
+    }
+    clips.push(new THREE.AnimationClip(clipDef.name, clipDef.duration, tracks));
+  }
+  rootGroup.animations = clips;
+
+  return rootGroup;
+}
+
+export async function loadFbxCached(url: string, _unusedShared = false): Promise<THREE.Group> {
+  const liteBinUrl = LITE_SKINNED_BIN_MAP[url] || LITE_SKINNED_BIN_MAP[decodeURI(url)];
+  if (liteBinUrl) {
+    try {
+      let bufPromise = skinnedBinBufferCache.get(liteBinUrl);
+      if (!bufPromise) {
+        bufPromise = fetch(liteBinUrl).then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.arrayBuffer();
+        });
+        skinnedBinBufferCache.set(liteBinUrl, bufPromise);
+      }
+      const buf = await bufPromise;
+      return buildGroupFromSkinnedBinBuffer(buf);
+    } catch {
+      // Fallback to raw FBXLoader if .skinned.bin is unavailable
+    }
+  }
+
   const loader = new FBXLoader();
   return new Promise<THREE.Group>((resolve, reject) => {
     loader.load(
       url,
       (group) => {
-        simplifyGroupGeometries(group, IS_SOFTWARE_WEBGL ? 18 : 38, 18000);
+        simplifyGroupGeometries(group, 56, 32000);
         resolve(group);
       },
       undefined,
@@ -31,8 +216,8 @@ export function loadFbxCached(url: string, _unusedShared = false): Promise<THREE
 
 export function simplifyGroupGeometries(
   group: THREE.Object3D,
-  gridRes = 38,
-  minVertexThreshold = 18000
+  gridRes = 56,
+  minVertexThreshold = 32000
 ): void {
   group.traverse((obj) => {
     if ((obj as THREE.SkinnedMesh).isSkinnedMesh) {
@@ -49,8 +234,8 @@ export function simplifyGroupGeometries(
 
 export function simplifyBufferGeometry(
   geo: THREE.BufferGeometry,
-  gridRes = 38,
-  minVertexThreshold = 18000
+  gridRes = 56,
+  minVertexThreshold = 32000
 ): THREE.BufferGeometry {
   const posAttr = geo.attributes.position as THREE.BufferAttribute | undefined;
   if (!posAttr || posAttr.count < minVertexThreshold) {

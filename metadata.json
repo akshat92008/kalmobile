@@ -1,6 +1,6 @@
 {
   "name": "Kaliyuga: The Bleeding Crown",
-  "description": "A dark-mythic isometric action roguelike set in the aftermath of the Kurukshetra war, powered by the custom Meru 2.5D/3D Engine.",
+  "description": "A mythic 2.5D isometric action roguelite set across the ash-choked battlefields of Mount Meru.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

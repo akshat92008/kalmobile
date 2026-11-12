@@ -530,7 +530,7 @@ export function drawGrounded3DContactShadow(
   ctx.fill();
   ctx.restore();
 
-  // 2. Tight boot-level Ambient Occlusion contact shadow core (anchors feet to stone)
+  // 2. Tight boot-level Ambient Occlusion contact shadow core (anchors feet to stone with high contrast)
   ctx.save();
   const aoGrad = ctx.createRadialGradient(
     0,
@@ -538,30 +538,29 @@ export function drawGrounded3DContactShadow(
     shadow.aoCoreRadiusX * 0.08,
     0,
     0,
-    shadow.aoCoreRadiusX
+    shadow.aoCoreRadiusX * 1.15
   );
-  aoGrad.addColorStop(0, `rgba(0, 0, 0, ${shadow.aoCoreAlpha})`);
-  aoGrad.addColorStop(0.65, `rgba(5, 3, 4, ${(shadow.aoCoreAlpha * 0.58).toFixed(3)})`);
+  aoGrad.addColorStop(0, `rgba(0, 0, 0, ${Math.min(0.92, shadow.aoCoreAlpha * 1.15).toFixed(3)})`);
+  aoGrad.addColorStop(0.65, `rgba(6, 3, 4, ${(shadow.aoCoreAlpha * 0.68).toFixed(3)})`);
   aoGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
   ctx.fillStyle = aoGrad;
   ctx.scale(1, shadow.aoCoreRadiusY / Math.max(1, shadow.aoCoreRadiusX));
   ctx.beginPath();
-  ctx.arc(0, 0, shadow.aoCoreRadiusX, 0, Math.PI * 2);
+  ctx.arc(0, 0, shadow.aoCoreRadiusX * 1.15, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
-  // 3. Subtle warm subsurface firelight rim bounce on the stone under the warrior
-  if (params.accentColor) {
-    ctx.save();
-    ctx.globalCompositeOperation = 'screen';
-    ctx.globalAlpha = shadow.warmBounceAlpha * 0.55;
-    ctx.strokeStyle = params.accentColor;
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, shadow.aoCoreRadiusX * 0.92, shadow.aoCoreRadiusY * 0.92, 0, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.restore();
-  }
+  // 3. Subtle warm subsurface firelight rim bounce on the stone under the warrior (Hades floor separation)
+  const rimCol = params.accentColor || '#ff7b29';
+  ctx.save();
+  ctx.globalCompositeOperation = 'screen';
+  ctx.globalAlpha = Math.max(0.22, shadow.warmBounceAlpha * 0.72);
+  ctx.strokeStyle = rimCol;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, shadow.aoCoreRadiusX * 0.98, shadow.aoCoreRadiusY * 0.98, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
 
   ctx.restore();
 }

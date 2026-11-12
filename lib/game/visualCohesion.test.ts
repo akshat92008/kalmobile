@@ -142,3 +142,4 @@ test('Pillar 1: computeWeaponTipGlintPosition distinguishes parriable Golden Gli
   assert.equal(crimson.primaryColor, '#ff2a3c');
   assert.ok(crimson.starRadius > golden.starRadius);
 });
+

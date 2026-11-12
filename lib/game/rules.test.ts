@@ -255,4 +255,13 @@ test('smart enemy pacing, predictive aim lead, and 3-stage Agni-Step dash curve 
   assert.ok(thrustHeavy.forwardLungePx > smashHeavy.forwardLungePx);
 });
 
-
+test('all 8 Act I chambers have HD animated arena videos and VFX flipbook sheets registered', async () => {
+  const { CHAMBERS, GAME_ASSETS } = await import('./assets');
+  assert.equal(CHAMBERS.length, 8);
+  for (const chamber of CHAMBERS) {
+    assert.ok(chamber.videoUrl && chamber.videoUrl.startsWith('/videos/') && chamber.videoUrl.endsWith('.mp4'));
+  }
+  assert.ok(CHAMBERS[7].phase2VideoUrl && CHAMBERS[7].phase2VideoUrl.endsWith('.mp4'));
+  assert.ok(Object.keys(GAME_ASSETS.vfxFlipbooks).length >= 16);
+  assert.ok(Object.keys(GAME_ASSETS.conceptPortraits).length >= 15);
+});

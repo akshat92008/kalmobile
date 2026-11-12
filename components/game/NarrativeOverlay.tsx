@@ -14,11 +14,21 @@ import {
   VRIKODARA_DIALOGUE,
 } from '@/engine/v7StoryEngine';
 import { GAME_ASSETS } from '@/lib/game/assets';
+import {
+  ASTRA_MANIFESTATION_MATRIX,
+  ASTRA_METADATA,
+  CombatDifficulty,
+  DIFFICULTY_MODIFIERS,
+  RunSummaryStats,
+} from '@/lib/game/astraEngine';
 
 interface NarrativeOverlayProps {
   stage: SliceStageId;
   storyFlags: StoryMemoryFlags;
   activeLookModal: LookObjectSpec | null;
+  difficulty?: CombatDifficulty;
+  onChangeDifficulty?: (diff: CombatDifficulty) => void;
+  lastRunSummary?: RunSummaryStats | null;
   onCloseLookModal: () => void;
   onAdvanceStage: (nextStage: SliceStageId, updatedFlags?: Partial<StoryMemoryFlags>) => void;
   onOpenShrine: () => void;
@@ -30,6 +40,9 @@ export function NarrativeOverlay({
   stage,
   storyFlags,
   activeLookModal,
+  difficulty = 'normal',
+  onChangeDifficulty,
+  lastRunSummary,
   onCloseLookModal,
   onAdvanceStage,
   onOpenShrine,
@@ -37,8 +50,10 @@ export function NarrativeOverlay({
   onCompleteSlice,
 }: NarrativeOverlayProps) {
   const [scrollIndex, setScrollIndex] = useState(0);
+  const [openingSceneStep, setOpeningSceneStep] = useState<1 | 2 | 3 | 4>(1);
   const [hillLookAttempted, setHillLookAttempted] = useState(false);
   const [brahmashiraFired, setBrahmashiraFired] = useState(false);
+  const [showAstraMatrix, setShowAstraMatrix] = useState(false);
   const [ferryChoiceId, setFerryChoiceId] = useState<'silence' | 'ask_ila' | 'apologize' | null>(
     storyFlags.ferry1Choice
   );
@@ -225,14 +240,16 @@ export function NarrativeOverlay({
                 ) : (
                   <button
                     type="button"
-                    onClick={() =>
+                    onClick={() => {
+                      setOpeningSceneStep(1);
+                      setBrahmashiraFired(false);
                       onAdvanceStage('opening_hill', {
                         prologueCompleted: true,
-                      })
-                    }
+                      });
+                    }}
                     className="px-6 py-2.5 bg-gradient-to-r from-[#b81d2a] to-[#d96b26] text-[#fff8eb] font-bold text-xs uppercase tracking-[0.16em] border border-[#f5c451] cursor-pointer"
                   >
-                    ENTER THE EIGHTEENTH NIGHT (PLAYABLE OPENING) →
+                    ENTER THE 4-SCENE PLAYABLE OPENING →
                   </button>
                 )}
               </div>
@@ -248,26 +265,94 @@ export function NarrativeOverlay({
   }
 
   // ==========================================================================
-  // STAGE 2: THE OPENING — NIGHT OF ASH HILL & UNWINNABLE PRESERVER DUEL (Sec. 8)
+  // STAGE 2: THE 4-SCENE PLAYABLE OPENING (Section 8)
   // ==========================================================================
   if (stage === 'opening_hill') {
     return (
       <div
         className={`fixed inset-0 z-50 flex flex-col justify-between p-6 md:p-12 overflow-y-auto transition-colors duration-700 ${
-          brahmashiraFired ? 'bg-[#f7f4eb] text-[#120e10]' : 'bg-[#060508] text-[#f5ebd6]'
+          brahmashiraFired && openingSceneStep === 2
+            ? 'bg-[#f7f4eb] text-[#120e10]'
+            : 'bg-[#060508] text-[#f5ebd6]'
         }`}
       >
-        <div className="max-w-4xl w-full mx-auto border-b border-[#c89d46]/30 pb-3 flex items-center justify-between">
+        <div className="max-w-4xl w-full mx-auto border-b border-[#c89d46]/30 pb-3 flex flex-wrap items-center justify-between gap-2">
           <span className="font-mono-num text-xs tracking-[0.24em] text-[#d4a548] uppercase">
-            SECTION 8 · THE EIGHTEENTH NIGHT · TWO HUNDRED PACES ABOVE THE CITADEL
+            SECTION 8 · 4-SCENE PLAYABLE OPENING · SCENE {openingSceneStep} OF 4
           </span>
-          <span className="font-mono-num text-xs text-[#ff6b78]">
-            MANI IN BROW: WHOLE (7/7 SHARDS)
-          </span>
+          <div className="flex items-center gap-2">
+            {[1, 2, 3, 4].map((sc) => (
+              <button
+                key={sc}
+                type="button"
+                onClick={() => {
+                  setOpeningSceneStep(sc as 1 | 2 | 3 | 4);
+                  setBrahmashiraFired(sc >= 3);
+                }}
+                className={`px-2 py-0.5 text-[10px] font-mono-num border cursor-pointer ${
+                  openingSceneStep === sc
+                    ? 'bg-[#d4a548] text-[#090807] border-[#ffd86b] font-bold'
+                    : 'bg-[#141016] text-[#a99e8b] border-[#c89d46]/30'
+                }`}
+              >
+                SCENE {sc}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {!brahmashiraFired ? (
+        {openingSceneStep === 1 && (
           <div className="max-w-4xl w-full mx-auto my-auto space-y-6">
+            <div className="text-xs font-mono-num tracking-[0.25em] text-[#ff7b54] uppercase">
+              SCENE 1 OF 4 · HEAVEN’S GATE RAMPAGE (THE MANI AT FULL POWER)
+            </div>
+            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-wide uppercase">
+              The Boy Who Was Forged as an Astra
+            </h2>
+            <p className="text-sm md:text-base text-[#cfc2ae] leading-relaxed">
+              With all seven shards of the <strong>Mani</strong> whole in your brow, you tear
+              through the outer bronze barricades on the Eighteenth Night. Every swing of your iron
+              Gada crackles with Agni, Vayu, and Vajra at once. You do not tire. You do not bleed.
+              You have been taught only one truth by your father <strong>Kaala-Chakra</strong>: a
+              weapon does not ask who stands behind the gate.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono-num">
+              <div className="p-3.5 bg-[#141016] border border-[#ff5e36]/45">
+                <div className="text-[#ff8a66] font-bold">AGNEYASTRA [Q] UNLOCKED</div>
+                <div className="text-[#bfb29e] mt-1">
+                  Scorches the barricades into molten slag craters.
+                </div>
+              </div>
+              <div className="p-3.5 bg-[#141016] border border-[#38bdf8]/45">
+                <div className="text-[#63f2ff] font-bold">VAYAVYASTRA [E] UNLOCKED</div>
+                <div className="text-[#bfb29e] mt-1">
+                  Cyclone currents scatter arrows and fan the flames.
+                </div>
+              </div>
+              <div className="p-3.5 bg-[#141016] border border-[#ffd86b]/45">
+                <div className="text-[#ffd86b] font-bold">VAJRASTRA [R] UNLOCKED</div>
+                <div className="text-[#bfb29e] mt-1">
+                  Sky-splitting thunder shatters every bronze shield in one blow.
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setOpeningSceneStep(2)}
+                className="px-6 py-2.5 bg-[#d4a548] hover:bg-[#e5b95c] text-[#090807] font-bold text-xs tracking-[0.16em] uppercase cursor-pointer"
+              >
+                ASCEND THE RIDGE ABOVE THE SHISHIRA (SCENE 2) →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {openingSceneStep === 2 && (
+          <div className="max-w-4xl w-full mx-auto my-auto space-y-6">
+            <div className="text-xs font-mono-num tracking-[0.25em] text-[#f5c451] uppercase">
+              SCENE 2 OF 4 · TWO HUNDRED PACES ABOVE THE CITADEL (LOOK BLOCKED)
+            </div>
             <h2 className="font-display text-3xl md:text-5xl font-bold tracking-wide uppercase">
               The Night of Ash (As Rudra Remembers It)
             </h2>
@@ -280,7 +365,7 @@ export function NarrativeOverlay({
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-[#120f14] border border-[#c89d46]/35 space-y-2 text-xs md:text-sm">
+              <div className="p-4 bg-[#120f14] border border-[#c89d46]/35 space-y-2 text-xs md:text-sm text-[#f5ebd6]">
                 <div>
                   <strong className="text-[#f5c451]">RUDRA:</strong> “Father? Who is inside?”
                 </div>
@@ -296,7 +381,7 @@ export function NarrativeOverlay({
                 </div>
               </div>
 
-              <div className="p-4 bg-[#120f14] border border-[#c89d46]/25 flex flex-col justify-between">
+              <div className="p-4 bg-[#120f14] border border-[#c89d46]/25 flex flex-col justify-between text-[#f5ebd6]">
                 <div className="text-xs text-[#a99e8b]">
                   The path down the hill is two hundred paces. In the Vow ending, this path will
                   open. Tonight, Rudra is fifteen years of obedience.
@@ -304,8 +389,8 @@ export function NarrativeOverlay({
 
                 {hillLookAttempted && (
                   <div className="my-2 p-2.5 bg-[#241316] border border-[#ff4d5e]/50 text-xs text-[#ff9ea8] font-mono-num">
-                    [LOOK BLOCKED]: The path down the hill is a wall. “A weapon does not ask. It
-                    strikes.”
+                    [LOOK BLOCKED]: The path down the hill is an invisible wall. “A weapon does not
+                    ask. It strikes.”
                   </div>
                 )}
 
@@ -320,19 +405,24 @@ export function NarrativeOverlay({
 
                   <button
                     type="button"
-                    onClick={() => setBrahmashiraFired(true)}
+                    onClick={() => {
+                      setBrahmashiraFired(true);
+                      setOpeningSceneStep(3);
+                    }}
                     className="px-6 py-2.5 bg-gradient-to-r from-[#c82333] via-[#ff6a2b] to-[#fff6e0] text-[#090807] font-bold text-xs tracking-[0.16em] uppercase cursor-pointer"
                   >
-                    [LMB] FIRE THE BRAHMASHIRA (WHITE FIRE)
+                    [LMB] FIRE THE BRAHMASHIRA (WHITE FIRE) →
                   </button>
                 </div>
               </div>
             </div>
           </div>
-        ) : (
+        )}
+
+        {openingSceneStep === 3 && (
           <div className="max-w-4xl w-full mx-auto my-auto space-y-6 bg-[#0d0a0e] text-[#f5ebd6] p-8 border-2 border-[#f5c451] shadow-[0_0_90px_rgba(255,248,224,0.45)]">
             <div className="text-xs font-mono-num tracking-[0.26em] text-[#f5c451] uppercase">
-              WHITE FIRE · THE COLOR OF A HELD BREATH · FORTY THOUSAND SOULS
+              SCENE 3 OF 4 · UNWINNABLE DUEL WITH THE PRESERVER · FORTY THOUSAND SOULS
             </div>
             <h3 className="font-display text-2xl md:text-4xl font-bold text-[#fff8eb]">
               The Preserver Arrives Too Late
@@ -343,9 +433,9 @@ export function NarrativeOverlay({
               descends—calm, his hands open, never attacking, only blocking your strikes.
             </p>
             <div className="p-4 bg-[#161218] border-l-2 border-[#5ce6ff] space-y-2 text-xs md:text-sm">
-              <div className="text-[#a99e8b] italic">
-                Behind you, Time is held for one breath. Kaala-Chakra whispers “Run” and falls to
-                the ground <strong>before</strong> the Preserver’s hand even moves.
+              <div className="text-[#ffd86b] font-semibold">
+                SUBTLE VISUAL CLUE: Behind you, Time is held for one breath. Kaala-Chakra whispers
+                “Run” and falls to the ground <u>before</u> the Preserver’s hand even moves.
               </div>
               <div className="flex items-center gap-3 py-1">
                 <img
@@ -360,12 +450,37 @@ export function NarrativeOverlay({
               <div className="text-[#d4a548]">
                 You do not hear him. You lunge. The Preserver reaches to your brow, tears the Mani
                 out, and shatters it into <strong>seven shards</strong> to free the souls. Instead,
-                the souls cling to the shards—and to you. Unable to die, you fall into the black
-                waters of the Vaitarani.
+                the souls cling to the shards—and to you.
               </div>
             </div>
 
             <div className="flex justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setOpeningSceneStep(4)}
+                className="px-7 py-3 bg-[#5ce6ff] hover:bg-[#82edff] text-[#090807] font-bold text-xs tracking-[0.18em] uppercase cursor-pointer"
+              >
+                FALL THREE THOUSAND YEARS INTO THE VAITARANI (SCENE 4) →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {openingSceneStep === 4 && (
+          <div className="max-w-4xl w-full mx-auto my-auto space-y-6 bg-[#0b090e] text-[#f5ebd6] p-8 border-2 border-[#d4a548]">
+            <div className="text-xs font-mono-num tracking-[0.26em] text-[#f5b952] uppercase">
+              SCENE 4 OF 4 · AWAKENING BY SAVITRI’S LANTERN ON THE VAITARANI
+            </div>
+            <h3 className="font-display text-2xl md:text-4xl font-bold text-[#fff8eb]">
+              The Hollow in the Brow &amp; The Suvarna Lullaby
+            </h3>
+            <p className="text-sm text-[#d8ccb8] leading-relaxed">
+              Three thousand years pass beneath the black current. When you open your eyes, a
+              single warm brass lantern sways above the prow of a ferryboat. The Mani is gone from
+              your forehead; in its place is a scarred hollow that hums a three-note lullaby you
+              cannot name.
+            </p>
+            <div className="flex justify-end">
               <button
                 type="button"
                 onClick={() =>
@@ -375,7 +490,7 @@ export function NarrativeOverlay({
                 }
                 className="px-7 py-3 bg-[#d4a548] hover:bg-[#e5b95c] text-[#090807] font-bold text-xs tracking-[0.18em] uppercase cursor-pointer"
               >
-                FALL THREE THOUSAND YEARS INTO THE VAITARANI →
+                STEP ONTO SAVITRI’S BOAT HUB →
               </button>
             </div>
           </div>
@@ -394,8 +509,8 @@ export function NarrativeOverlay({
   if (stage === 'vaitarani_hub' || stage === 'opening_wake') {
     const foldedPageLooked = storyFlags.looks.includes('boat_folded_page');
     return (
-      <div className="fixed inset-0 z-50 bg-[#060609] flex flex-col justify-between p-6 md:p-11 overflow-y-auto select-none">
-        {/* Top Bar: Lantern State & Story Flags */}
+      <div className="fixed inset-0 z-50 bg-[#060609] flex flex-col justify-between p-6 md:p-10 overflow-y-auto select-none">
+        {/* Top Bar: Lantern State, Difficulty Selector & Story Flags */}
         <div className="max-w-6xl w-full mx-auto flex flex-wrap items-center justify-between gap-4 border-b border-[#c89d46]/30 pb-3.5">
           <div className="flex items-center gap-3">
             <span
@@ -411,9 +526,30 @@ export function NarrativeOverlay({
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono-num text-[#c4b7a2]">
+          <div className="flex flex-wrap items-center gap-3 text-xs font-mono-num text-[#c4b7a2]">
+            {/* Difficulty Selector (Story / Normal / Hard) */}
+            {onChangeDifficulty && (
+              <div className="flex items-center gap-1 bg-[#120f16] border border-[#c89d46]/40 px-2 py-1">
+                <span className="text-[10px] text-[#a99e8b] mr-1">MODE:</span>
+                {(['story', 'normal', 'hard'] as CombatDifficulty[]).map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => onChangeDifficulty(d)}
+                    className={`px-2 py-0.5 text-[10px] uppercase cursor-pointer ${
+                      difficulty === d
+                        ? 'bg-[#d4a548] text-[#090807] font-bold'
+                        : 'text-[#c4b7a2] hover:text-white'
+                    }`}
+                    title={DIFFICULTY_MODIFIERS[d].subtitle}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
+            )}
             <span>
-              LOOK THREADS: <strong className="text-[#f5c451]">{storyFlags.looks.length}/6</strong>
+              LOOKS: <strong className="text-[#f5c451]">{storyFlags.looks.length}/6</strong>
             </span>
             <span>
               SHARDS: <strong className="text-[#ff7b54]">{storyFlags.shardsCollected}/7</strong>
@@ -425,55 +561,146 @@ export function NarrativeOverlay({
         </div>
 
         {/* Center Boat Scene */}
-        <div className="max-w-6xl w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-6">
-          {/* Boat Visual & Lantern Glow */}
-          <div className="lg:col-span-6 relative border border-[#c89d46]/50 bg-[#0c0a0e] overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.95)]">
-            <img
-              src={GAME_ASSETS.portraits.savitri}
-              alt="Savitri's Boat on the Vaitarani River"
-              className="w-full h-72 md:h-96 object-cover object-top"
-            />
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: `radial-gradient(circle at 38% 58%, ${lantern.glowColor} 0%, rgba(6,6,10,0.82) 78%)`,
-              }}
-            />
-            <div className="absolute bottom-4 left-4 right-4 p-4 bg-[#0b090d]/92 border border-[#c89d46]/40 flex items-start gap-3.5">
+        <div className="max-w-6xl w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start py-5">
+          {/* Boat Visual, Lantern Glow & Previous Run Summary */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="relative border border-[#c89d46]/50 bg-[#0c0a0e] overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.95)]">
               <img
                 src={GAME_ASSETS.portraits.savitri}
-                alt="Savitri"
-                className="w-14 h-14 object-cover border border-[#f5b952]/70 shrink-0"
+                alt="Savitri's Boat on the Vaitarani River"
+                className="w-full h-64 md:h-80 object-cover object-top"
               />
-              <div className="space-y-1">
-                <div className="text-[10px] font-mono-num tracking-[0.24em] text-[#d4a548] uppercase">
-                  SAVITRI · LAST FERRYWOMAN OF THE VAITARANI ({lantern.savitriVoiceTone})
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: `radial-gradient(circle at 38% 58%, ${lantern.glowColor} 0%, rgba(6,6,10,0.82) 78%)`,
+                }}
+              />
+              <div className="absolute bottom-3 left-3 right-3 p-3.5 bg-[#0b090d]/92 border border-[#c89d46]/40 flex items-start gap-3">
+                <img
+                  src={GAME_ASSETS.portraits.savitri}
+                  alt="Savitri"
+                  className="w-12 h-12 object-cover border border-[#f5b952]/70 shrink-0"
+                />
+                <div className="space-y-1">
+                  <div className="text-[10px] font-mono-num tracking-[0.22em] text-[#d4a548] uppercase">
+                    SAVITRI · LAST FERRYWOMAN ({lantern.savitriVoiceTone})
+                  </div>
+                  <p className="text-xs text-[#fff6e8] leading-relaxed">
+                    {lantern.savitriWakeLine}
+                  </p>
+                  <p className="text-[11px] text-[#d4a548] italic">
+                    “At the end, you answer one question. Will you still be here?”
+                  </p>
                 </div>
-                <p className="text-xs md:text-sm text-[#fff6e8] leading-relaxed">
-                  {lantern.savitriWakeLine}
-                </p>
-                <p className="text-xs text-[#d4a548] italic">
-                  “At the end, you answer one question. Will you still be here?”
-                </p>
               </div>
             </div>
+
+            {/* Previous Run Summary Board */}
+            {lastRunSummary && (
+              <div className="p-3.5 bg-[#110e15] border border-[#c89d46]/45 text-xs font-mono-num space-y-1.5">
+                <div className="flex items-center justify-between border-b border-[#c89d46]/25 pb-1">
+                  <span className="text-[#f5c451] font-bold uppercase">
+                    LAST EXPEDITION RECORD ({difficulty.toUpperCase()})
+                  </span>
+                  <span
+                    className={
+                      lastRunSummary.outcome === 'victory'
+                        ? 'text-[#3ee0a8] font-bold'
+                        : 'text-[#ff7b54] font-bold'
+                    }
+                  >
+                    {lastRunSummary.outcome === 'victory' ? 'ACT I CLEARED' : 'RETURNED BY RIVER'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-[11px] text-[#dfd3be]">
+                  <div>
+                    CHAMBERS: <strong>{lastRunSummary.chambersCleared}/5</strong>
+                  </div>
+                  <div>
+                    DAMAGE: <strong className="text-[#3ee0a8]">{lastRunSummary.damageDealt}</strong>
+                  </div>
+                  <div>
+                    ASTRAS: <strong className="text-[#ffd86b]">{lastRunSummary.astrasInvoked}</strong>
+                  </div>
+                  <div>
+                    UPASAMHARA: <strong className="text-[#63f2ff]">{lastRunSummary.upasamharaWithdrawals}</strong>
+                  </div>
+                  <div>
+                    PARRIES: <strong>{lastRunSummary.parriesLanded}</strong>
+                  </div>
+                  <div>
+                    STILLNESS: <strong className="text-[#f5c451]">{lastRunSummary.narayanastraTrialsPassed}</strong>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Hub Actions, Look Seed & Sanjaya's Chronicle */}
-          <div className="lg:col-span-6 space-y-5">
-            <div>
-              <div className="text-xs font-mono-num tracking-[0.28em] text-[#d4a548] uppercase">
-                ACT I · THE CHARNEL PLAINS (VERTICAL SLICE)
+          {/* Hub Actions, Look Seed, Sanjaya's Chronicle & 3x3 Stance x Astra Matrix */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <div className="text-xs font-mono-num tracking-[0.28em] text-[#d4a548] uppercase">
+                  ACT I · THE CHARNEL PLAINS (VERTICAL SLICE)
+                </div>
+                <h2 className="font-display text-2xl md:text-3xl font-bold text-[#f7efe0] mt-1">
+                  Three Thousand Years Later
+                </h2>
               </div>
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-[#f7efe0] mt-1">
-                Three Thousand Years Later
-              </h2>
-              <p className="text-xs md:text-sm text-[#c7bba6] leading-relaxed mt-2">
-                Savitri has hauled you from the river of the dead. In your hand is your broken iron
-                <strong> Gada</strong>, stamped with a spiral mark. In your brow is an empty hollow
-                that hums a thin, wordless lullaby.
-              </p>
+              <button
+                type="button"
+                onClick={() => setShowAstraMatrix((prev) => !prev)}
+                className="px-3 py-1.5 bg-[#1b150e] hover:bg-[#2a2014] border border-[#f5c451]/70 text-[11px] font-mono-num text-[#ffd86b] uppercase cursor-pointer"
+              >
+                {showAstraMatrix ? 'HIDE 3×3 ASTRA MATRIX ▴' : 'VIEW 3×3 STANCE × ASTRA MATRIX ▾'}
+              </button>
             </div>
+
+            {showAstraMatrix ? (
+              <div className="p-4 bg-[#110e14] border border-[#f5c451]/55 space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-[#c89d46]/30 pb-1.5">
+                  <span className="font-mono-num font-bold text-[#ffd86b] uppercase">
+                    3 STANCES (1/2/3) × 3 ASTRAS ([Q] AGNI · [E] VAYU · [R] VAJRA) + UPASAMHARA
+                  </span>
+                  <span className="text-[10px] font-mono-num text-[#3ee0a8]">
+                    SECOND PRESS = +10 ASTRA REFUND
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {(['agneyastra', 'vayavyastra', 'vajrastra'] as const).map((aId) => {
+                    const meta = ASTRA_METADATA[aId];
+                    return (
+                      <div
+                        key={aId}
+                        className="p-2.5 bg-[#0c0a0f] border border-[#c89d46]/30 space-y-1.5"
+                      >
+                        <div className="font-mono-num font-bold" style={{ color: meta.color }}>
+                          [{meta.keybind}] {meta.name.toUpperCase()} ({meta.baseEnergyCost} ASTRA)
+                        </div>
+                        {(['smash', 'pillar', 'thrust'] as const).map((st) => {
+                          const spec = ASTRA_MANIFESTATION_MATRIX[aId][st];
+                          return (
+                            <div key={st} className="text-[11px] text-[#d8ccb8] leading-snug">
+                              <strong className="text-[#f5c451] uppercase">{st}:</strong>{' '}
+                              {spec.title}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs md:text-sm text-[#c7bba6] leading-relaxed">
+                Savitri has hauled you from the river of the dead. In your hand is your broken iron
+                <strong> Gada</strong>, stamped with a spiral mark. Invoke <strong>[Q] Agneyastra</strong>,{' '}
+                <strong>[E] Vayavyastra</strong>, and <strong>[R] Vajrastra</strong> across all 3
+                stances—and press active fire or wind zones a second time to trigger{' '}
+                <strong>Upasamhara Withdrawal (+10 Astra Energy)</strong>.
+              </p>
+            )}
 
             {/* Sanjaya's Chronicle Status (Shows Strikethrough Correction #1 once Vrikodara's Shard is taken!) */}
             <div className="p-4 bg-[#120f15] border border-[#c89d46]/35 flex items-start gap-3.5">
@@ -537,7 +764,7 @@ export function NarrativeOverlay({
             </div>
 
             {/* Primary Hub Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
               <button
                 type="button"
                 onClick={() => onStartAct1Run(0)}
@@ -571,7 +798,7 @@ export function NarrativeOverlay({
               </button>
             </div>
 
-            <div className="flex items-center justify-between pt-2 text-[11px] font-mono-num text-[#8f8472]">
+            <div className="flex items-center justify-between pt-1 text-[11px] font-mono-num text-[#8f8472]">
               <button
                 type="button"
                 onClick={() => {
@@ -580,7 +807,7 @@ export function NarrativeOverlay({
                 }}
                 className="hover:text-[#f5c451] underline cursor-pointer"
               >
-                Rewatch Five-Scroll Prologue &amp; Opening
+                Rewatch Five-Scroll Prologue &amp; 4-Scene Opening
               </button>
               {storyFlags.shardsCollected >= 1 && (
                 <button
@@ -720,7 +947,7 @@ export function NarrativeOverlay({
             </div>
 
             <div className="md:col-span-7 space-y-3.5">
-              <h3 className="font-display text-2xl font-bold text-[#fff8eb]">
+              <h3 className="font-display text-2xl font-bold text-[#fff6e8]">
                 “Rudra. Go and Look.”
               </h3>
               <p className="text-xs sm:text-sm text-[#d8ccb8] leading-relaxed">
@@ -1252,7 +1479,7 @@ export function NarrativeOverlay({
             <div className="text-xs font-mono-num tracking-[0.26em] text-[#f5c451] uppercase">
               ENDING ONE · THE VOW · THE TWO HUNDRED PACES
             </div>
-            <h2 className="font-display text-3xl font-bold text-[#fff8eb]">
+            <h2 className="font-display text-3xl font-bold text-[#fff6e8]">
               “Rudra. I gave you my life so you could hold the world. You held it. Now let it go.”
             </h2>
             <p className="text-sm text-[#e0d4c0] leading-relaxed">
@@ -1272,7 +1499,7 @@ export function NarrativeOverlay({
                   : ' its wing still crooked (find 3+ Look objects in Act I to bandage its wing).'}
               </strong>
             </p>
-            <div className="p-4 bg-[#16131a] border-l-2 border-[#f5c451] text-sm text-[#fff8eb]">
+            <div className="p-4 bg-[#16131a] border-l-2 border-[#f5c451] text-sm text-[#fff6e8]">
               <strong className="text-[#f5c451] mr-2">SANJAYA (UNCORRECTED):</strong>
               “Let it be written that he was not wronged. He was forgiven, and he was not let off.
               And he stayed.”
@@ -1285,7 +1512,7 @@ export function NarrativeOverlay({
             <div className="text-xs font-mono-num tracking-[0.26em] text-[#ff8a94] uppercase">
               ENDING TWO · THE SOVEREIGN
             </div>
-            <h2 className="font-display text-3xl font-bold text-[#fff8eb]">
+            <h2 className="font-display text-3xl font-bold text-[#fff6e8]">
               “Rudra. What did you pay?” — “Nothing that mattered.”
             </h2>
             <p className="text-sm text-[#e0d4c0] leading-relaxed">

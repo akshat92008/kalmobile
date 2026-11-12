@@ -8,17 +8,17 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  // Allow access to remote image placeholder.
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'picsum.photos',
         port: '',
-        pathname: '/**', // This allows any path under the hostname
+        pathname: '/**',
       },
     ],
   },
+  output: 'standalone',
   transpilePackages: ['motion'],
   webpack: (config, {dev}) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.
@@ -29,6 +29,29 @@ const nextConfig: NextConfig = {
       };
     }
     return config;
+  },
+  async rewrites() {
+    const assetDirs = [
+      'videos',
+      'models',
+      'animations',
+      'audio',
+      'images',
+      'cutscenes',
+      'new_3d_assets',
+    ];
+    return {
+      beforeFiles: assetDirs.map((dir) => ({
+        source: `/${dir}/:path*`,
+        destination: `/api/static/${dir}/:path*`,
+      })),
+      fallback: [
+        {
+          source: '/assets/:path*',
+          destination: '/api/static/assets/:path*',
+        },
+      ],
+    };
   },
 };
 

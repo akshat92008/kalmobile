@@ -51,6 +51,8 @@ export interface ChamberSpec {
   backgroundUrl: string;
   unlockedBackgroundUrl?: string;
   phase2BackgroundUrl?: string;
+  videoUrl?: string;
+  phase2VideoUrl?: string;
   floorTint: string;
   isBossChamber: boolean;
   envEffect: 'blood_river' | 'lava_fissures' | 'sacred_mist' | 'eclipse_wind';
@@ -63,6 +65,19 @@ export const GAME_ASSETS = {
   // Full-bleed Homescreen Cinematic MP4 Video (Muted) & Key Art Fallbacks from Repository
   titleVideo: '/videos/Warrior_standing_on_battlefield_e09ae2f5.mp4',
   titleVideo1080p: '/videos/Warrior_standing_on_battlefield_e09ae2f5_1080p.mp4',
+
+  // HD 1080p Animated Chamber Background Videos & Combat Energy Video
+  arenaVideos: {
+    waterCourtyard: '/videos/Animate_courtyard_image_with_water_47b6b081_1080p.mp4',
+    templeEnvironment: '/videos/Animate_image_into_game_environment_ad4672f3_1080p.mp4',
+    battlefieldEnv: '/videos/Animate_battlefield_environment_…_56896e20.mp4',
+    fogClearingSanctum: '/videos/Animate_image_removing_fog_e4e55e75_1080p.mp4',
+    lavaArena: '/videos/Animate_lava_arena_scene_0e362b91_1080p.mp4',
+    mythicEnvA: '/videos/Animate_mythological_game_enviro…_743206b7_1080p.mp4',
+    mythicEnvB: '/videos/Animate_mythological_game_enviro…_db8affc3_1080p.mp4',
+    mythicEnvC: '/videos/Animate_mythological_game_enviro…_f7acefd6_1080p.mp4',
+    axeSlashEnergy: '/videos/Axe_slash_energy_attack_animation_236a5328_1080p.mp4',
+  },
   titleVideo720p: '/videos/Warrior_standing_on_battlefield_e09ae2f5.mp4',
   titleBackdrop: '/assets/aistudio/Blood_Eclipsed_Warrior_of_the_Ruins.png',
   deathBackdrop: '/assets/aistudio/Crimson_Underworld_River_of_the_Drowned_Warrior.png',
@@ -97,6 +112,8 @@ export const GAME_ASSETS = {
   models3d: {
     dundubhiFbx:
       '/models/Meshy_AI_Runebound_Minotaur_Warlord_20261025_texture_fbx/Meshy_AI_Runebound_Minotaur_Warlord_Animations.fbx',
+    dundubhiTextureFbx:
+      '/models/Meshy_AI_Runebound_Minotaur_Warlord_20261025_texture_fbx/Meshy_AI_Runebound_Minotaur_Warlord_20261025_texture.fbx',
     dundubhiAnims: {
       idle: '/models/Meshy_AI_Runebound_Minotaur_Warlord_20261025_texture_fbx/mutant_idle.fbx',
       walk: '/models/Meshy_AI_Runebound_Minotaur_Warlord_20261025_texture_fbx/mutant_run.fbx',
@@ -251,15 +268,19 @@ export const GAME_ASSETS = {
 
   // Hand-Painted 16:9 Isometric Indian Kurukshetra & Kaliyuga Chamber Arenas (Zero Wukong/Chinese Arenas)
   chambers: {
-    vaitaraniGhat: '/assets/aistudio/Gemini_Generated_Image_vjfugjvjfugjvjfu_d880974a.png',
+    vaitaraniGhat: '/assets/aistudio/Gemini_Generated_Image_rdujlrrdujlrrduj.png',
+    vaitaraniGhatAlt: '/assets/aistudio/Gemini_Generated_Image_pw6vhspw6vhspw6v.png',
     raktabijaCourtyard: '/assets/aistudio/Gemini_Generated_Image_bmq158bmq158bmq1_a3eaf68a.png',
-    chariotBonefield: '/assets/aistudio/Gemini_Generated_Image_ey07c4ey07c4ey07_1de21fb8.png',
+    chariotBonefield: '/assets/aistudio/Gemini_Generated_Image_fexppofexppofexp.png',
+    chariotBonefieldAlt: '/assets/aistudio/Gemini_Generated_Image_ey07c4ey07c4ey07_1de21fb8.png',
     warDrumColonnade: '/assets/aistudio/Gemini_Generated_Image_c0fyyc0fyyc0fyyc_4d7dcd20.png',
     soulFireSanctum: '/assets/aistudio/Gemini_Generated_Image_acbxb7acbxb7acbx_9e34bd2e.png',
-    gopuramCauseway: '/assets/aistudio/Gemini_Generated_Image_c0fyyc0fyyc0fyyc_4d7dcd20.png',
+    gopuramCauseway: '/assets/aistudio/Gemini_Generated_Image_p8dfx9p8dfx9p8df.png',
+    gopuramCausewayAlt: '/assets/aistudio/Gemini_Generated_Image_c0fyyc0fyyc0fyyc_4d7dcd20.png',
     asuraLavaLocked: '/assets/aistudio/Gemini_Generated_Image_u58tfju58tfju58t_2d5d830a.png',
     asuraLavaUnlocked: '/assets/aistudio/Gemini_Generated_Image_8jz0rn8jz0rn8jz0_9c7ece82.png',
-    bossSanctumPhase1: '/assets/aistudio/Gemini_Generated_Image_25mxvb25mxvb25mx_d4637a39.png',
+    bossSanctumPhase1: '/assets/aistudio/Gemini_Generated_Image_plgsv7plgsv7plgs.png',
+    bossSanctumPhase1Alt: '/assets/aistudio/Gemini_Generated_Image_25mxvb25mxvb25mx_d4637a39.png',
     bossSanctumPhase2Eclipse: '/assets/aistudio/Gemini_Generated_Image_9sbc7m9sbc7m9sbc_0cf239b7.png',
   },
 
@@ -289,8 +310,8 @@ export const GAME_ASSETS = {
 
   // Multi-Row Green-Screen & 2x2 Hand-Painted Boss Sprite Sheets (Dundubhi & Vrikodara)
   bossSheets: {
-    dundubhiMinotaurSheetP1: '/assets/aistudio/Minotaur_Warrior_Sprite_Animation_Sheet-4_0e907cc4.png',
-    dundubhiMinotaurSheetP2: '/assets/aistudio/Horned_Warrior_Animation_Sprite_Sheet-3_435b3144.png',
+    dundubhiMinotaurSheetP1: '/assets/aistudio/Gemini_Generated_Image_h2s8ngh2s8ngh2s8.png',
+    dundubhiMinotaurSheetP2: '/assets/aistudio/Gemini_Generated_Image_kx4tuckx4tuckx4t.png',
     vrikodaraDemonicKingSheet: '/assets/aistudio/Demonic_King_Action_Sprite_Sheet_952b9b46.png',
     dundubhiPhase1SheetA2x2: '/assets/aistudio/35922E13-6015-481F-8ABF-723988E0F89C_8e007552.png',
     dundubhiPhase1SheetB2x2: '/assets/aistudio/565576C2-F6B7-4179-94FD-2534E706355F_b28aa5ba.png',
@@ -299,28 +320,32 @@ export const GAME_ASSETS = {
     vrikodaraPhase2Sheet2x2: '/assets/aistudio/0A23068F-ECD7-4091-98B2-E98569B6AE85_af84ff47.png',
   },
 
-  // Multi-Row Green-Screen & 4-Frame Enemy Sprite Sheets (Uploaded Full Animation Roster)
+  // 14 Grey-Background Isometric 6-Row Enemy Sprite Sheets (Hades 2.5D Perspective Roster)
   enemySheets: {
-    bronzeSpearmanSheet: '/assets/aistudio/Bronze_Spearman_Sprite_Sheet_3cc29693.png',
-    ghoulSheet: '/assets/aistudio/Ghoul_Animation_Sprite_Sheet_d0cacfa1.png',
-    fantasyKnightSheet: '/assets/aistudio/Fantasy_Knight_Combat_Sprite_Sheet_ef12207b.png',
-    kabandhaMonsterSheet: '/assets/aistudio/Monster_Sprite_Animation_Sheet_8a0eacb8.png',
-    hoodedMageSheet: '/assets/aistudio/Hooded_Mage_Animation_Sprite_Sheet_1143e190.png',
-    nagaWarriorSheet: '/assets/aistudio/Naga_Warrior_Animation_Sprite_Sheet_cb4445e9.png',
-    ogreWarriorSheet: '/assets/aistudio/Ogre_Warrior_Animation_Sprite_Sheet_53fbad9a.png',
-    demonicOgreSheet: '/assets/aistudio/Demonic_Ogre_Warrior_Sprite_Sheet_cba725fc.png',
-    moltenGolemSheet: '/assets/aistudio/Molten_Golem_Animation_Sprite_Sheet_2e2d5ebe.png',
-    undeadMonsterSheet: '/assets/aistudio/Undead_Monster_Animation_Spritesheet_534448a1.png',
-    undeadWarriorSheet: '/assets/aistudio/Undead_Warrior_Sprite_Sheet_28b77f1c.png',
-    undeadArcherSheet: '/assets/aistudio/Undead_Archer_Animation_Sprite_Sheet_d766d867.png',
-    aghoriSorcererSheet4x1: '/assets/aistudio/EEC0C930-2E86-45A2-A02B-0953ACE3362E_7c8d057e.png',
-    urumiAssassinSheet4x1: '/assets/aistudio/DD93700A-4C55-47C2-B081-115AAF6D0B03_d6da51ef.png',
-    nagaKingSheet2x2: '/assets/aistudio/59C244F9-D856-485F-8D8A-2408B379DEA1_c1540730.png',
-    sharabhaHoundSheet4x1: '/assets/aistudio/Gemini_Generated_Image_8u43ce8u43ce8u43_e8ea70fa.png',
-    pretaBowmanSheet4x1: '/assets/aistudio/Gemini_Generated_Image_6669w66669w66669_7106b7d0.png',
-    rakshasaMaceSheet4x1: '/assets/aistudio/Gemini_Generated_Image_uyv1euuyv1euuyv1_ae2bf117.png',
-    kaliyugaAvatarSheet2x2: '/assets/aistudio/Gemini_Generated_Image_el5r51el5r51el5r_5da30179.png',
-    furnaceColossusSheet4x1: '/assets/aistudio/Gemini_Generated_Image_by91e1by91e1by91_46282a74.png',
+    bronzeSpearmanSheet: '/assets/aistudio/Gemini_Generated_Image_8yp2l78yp2l78yp2.png',
+    ghoulSheet: '/assets/aistudio/Gemini_Generated_Image_d57givd57givd57g.png',
+    fantasyKnightSheet: '/assets/aistudio/Gemini_Generated_Image_q7gfcrq7gfcrq7gf.png',
+    kabandhaMonsterSheet: '/assets/aistudio/Gemini_Generated_Image_ojo449ojo449ojo4.png',
+    hoodedMageSheet: '/assets/aistudio/Gemini_Generated_Image_4lkbel4lkbel4lkb.png',
+    nagaWarriorSheet: '/assets/aistudio/Gemini_Generated_Image_a1cw1wa1cw1wa1cw.png',
+    ogreWarriorSheet: '/assets/aistudio/Gemini_Generated_Image_7yurbo7yurbo7yur.png',
+    demonicOgreSheet: '/assets/aistudio/Gemini_Generated_Image_70z55s70z55s70z5.png',
+    moltenGolemSheet: '/assets/aistudio/Gemini_Generated_Image_70z55s70z55s70z5.png',
+    undeadMonsterSheet: '/assets/aistudio/Gemini_Generated_Image_wg0e4cwg0e4cwg0e.png',
+    undeadWarriorSheet: '/assets/aistudio/Gemini_Generated_Image_4onmdt4onmdt4onm.png',
+    undeadArcherSheet: '/assets/aistudio/Gemini_Generated_Image_oen1iloen1iloen1.png',
+    minotaurWarriorSheet1: '/assets/aistudio/Gemini_Generated_Image_h2s8ngh2s8ngh2s8.png',
+    hornedMinotaurSheet2: '/assets/aistudio/Gemini_Generated_Image_kx4tuckx4tuckx4t.png',
+    hornedWarriorSheet3: '/assets/aistudio/Gemini_Generated_Image_s313yes313yes313.png',
+    minotaurSheet4: '/assets/aistudio/Gemini_Generated_Image_h2s8ngh2s8ngh2s8.png',
+    aghoriSorcererSheet4x1: '/assets/aistudio/Gemini_Generated_Image_4lkbel4lkbel4lkb.png',
+    urumiAssassinSheet4x1: '/assets/aistudio/Gemini_Generated_Image_a1cw1wa1cw1wa1cw.png',
+    nagaKingSheet2x2: '/assets/aistudio/Gemini_Generated_Image_a1cw1wa1cw1wa1cw.png',
+    sharabhaHoundSheet4x1: '/assets/aistudio/Gemini_Generated_Image_d57givd57givd57g.png',
+    pretaBowmanSheet4x1: '/assets/aistudio/Gemini_Generated_Image_oen1iloen1iloen1.png',
+    rakshasaMaceSheet4x1: '/assets/aistudio/Gemini_Generated_Image_7yurbo7yurbo7yur.png',
+    kaliyugaAvatarSheet2x2: '/assets/aistudio/Gemini_Generated_Image_70z55s70z55s70z5.png',
+    furnaceColossusSheet4x1: '/assets/aistudio/Gemini_Generated_Image_ojo449ojo449ojo4.png',
   },
 
   // Uploaded Non-Wukong Warden, Boss & Enemy Concept Portraits for HUD Banners & Compendium
@@ -370,7 +395,7 @@ export const GAME_ASSETS = {
     kneel: '/assets/aistudio/Battle-Worn_Warrior_Kneeling_on_His_Sword_55ca9257.png',
   },
   enemies: {
-    vrikaIdle: '/assets/aistudio/DD93700A-4C55-47C2-B081-115AAF6D0B03_d6da51ef.png',
+    vrikaIdle: '/assets/aistudio/Gemini_Generated_Image_d57givd57givd57g.png',
   },
   dundubhi: {
     idle: '/assets/aistudio/35922E13-6015-481F-8ABF-723988E0F89C_8e007552.png',
@@ -384,6 +409,70 @@ export const GAME_ASSETS = {
     p2Idle: '/assets/aistudio/0A23068F-ECD7-4091-98B2-E98569B6AE85_af84ff47.png',
     p2Sweep: '/assets/aistudio/0A23068F-ECD7-4091-98B2-E98569B6AE85_af84ff47.png',
     p2Kneel: '/assets/aistudio/0A23068F-ECD7-4091-98B2-E98569B6AE85_af84ff47.png',
+  },
+
+  // New Multi-Frame Hand-Painted Combat VFX Flipbook Sprite Sheets (/assets/vfx & /assets/concepts)
+  vfxFlipbooks: {
+    axeSlashTrail1x8: '/assets/vfx/Axe_slash_trail_sprite_sheet_5833cc93.jpg',
+    goldenJadeBurst1x8: '/assets/concepts/Gemini_Generated_Image_ckan5eckan5eckan.png',
+    agniJadeDashFlame1x8: '/assets/concepts/Gemini_Generated_Image_g4k6rg4k6rg4k6rg.png',
+    weaponSlash1x8: '/assets/vfx/Weapon_slash_animation_sprite_sheet_ba35aea3.jpg',
+    energyArc4x2: '/assets/vfx/Energy_arc_sprite_sheet_animation_a192f958.jpg',
+    impactFlash4x2: '/assets/vfx/Combat_VFX_impact_flash_sprite_94a7b372.jpg',
+    enemyDamageHit1x8: '/assets/vfx/Hand-painted_enemy_damage_hit_burst_0382a20d.jpg',
+    bloodSplatter4x2: '/assets/vfx/Blood_splatter_sprite_sheet_anim_d902fbcf.jpg',
+    groundSlam1x6: '/assets/vfx/Ground_slam_impact_sprite_sheet_045bab37.jpg',
+    moltenBurst4x2: '/assets/vfx/Molten_energy_burst_sprite_sheet_c9aef3c4.jpg',
+    bossGroundTelegraph4x2: '/assets/vfx/Boss_attack_ground_telegraph_sprite_641e6edf.jpg',
+    bossChargeDust1x8: '/assets/vfx/Boss_charge_dust_trail_sprite_b41bc40f.jpg',
+    earthyDust1x8: '/assets/vfx/Earthy_dust_burst_sprite_sheet_c25414cb.jpg',
+    dustBurst2K: '/assets/vfx/Dust_burst_sprite_sheet_animation_55b33a2e_2K.jpg',
+    handPaintedDust2K: '/assets/vfx/Hand-painted_dust_burst_animation_1934edb4_2K.jpg',
+    stoneFragments4x2: '/assets/vfx/Flying_stone_fragments_sprite_sheet_9bf5a8bb.jpg',
+    healingPulse4x2: '/assets/vfx/Healing_energy_pulse_sprite_sheet_5e38a9cc.jpg',
+    undeadSpawn4x2: '/assets/vfx/Undead_enemy_spawn_animation_sprite_557d80c2.jpg',
+    magicalProjectile4x2: '/assets/vfx/Magical_projectile_sprite_sheet__319410b6.jpg',
+    expandingShockwave: '/assets/concepts/Expanding_ground_shockwave_sprit_a2584071.jpg',
+    goldenSparks: '/assets/concepts/Golden_metallic_impact_sparks_sp_2c297451.jpg',
+    turquoiseProjectile: '/assets/concepts/Turquoise_and_violet_projectile__05d4d912.jpg',
+    turquoiseImpact: '/assets/concepts/Turquoise_magical_projectile_imp_a0db012d.jpg',
+    undeadDissolve: '/assets/concepts/Undead_enemy_death_dissolve_anim_6d72d5b4.jpg',
+  },
+
+  // New Full-Body Isometric Character & Boss Concept Art Sheets (/assets/concepts/lucid-origin_*)
+  conceptPortraits: {
+    dundubhiBoss:
+      '/assets/concepts/lucid-origin_Design_a_full-body_boss_character_of_DUNDUBHI_for_KALIYUGA_THE_BLEEDING_CROWN_a_-0.jpg',
+    vrikodaraBoss:
+      '/assets/concepts/lucid-origin_Design_a_full-body_boss_character_of_VRIKODARA_for_KALIYUGA_THE_BLEEDING_CROWN_a-0.jpg',
+    ancientTempleGuardian:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Ancient_Temple_Guardian_enemy_for_KALIYUGA_THE_BLEEDING_CROWN-0.jpg',
+    bronzeSpearman:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Bronze_Spearman_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_dark_-0.jpg',
+    charnelAbomination:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Charnel_Abomination_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_d-0.jpg',
+    charnelGhoul:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Charnel_Ghoul_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_dark_In-0.jpg',
+    charnelGhoulAlt:
+      '/assets/concepts/lucid-origin_Create_a_full-body_character_concept_of_a_Charnel_Ghoul_for_the_dark_Indian_myth-0.jpg',
+    charnelUndeadWarrior:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Charnel_Undead_Warrior_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_-0.jpg',
+    hoodedMage:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Hooded_Mage_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_dark_Indi-0.jpg',
+    hornedMinotaurWarrior:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Horned_Minotaur_Warrior_enemy_for_KALIYUGA_THE_BLEEDING_CROWN-0.jpg',
+    hornedWarrior:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Horned_Warrior_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_dark_I-0.jpg',
+    kabandhaMonster:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Kabandha-inspired_monster_for_KALIYUGA_THE_BLEEDING_CROWN_a_d-0.jpg',
+    nagaWarrior:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Naga_Warrior_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_dark_Ind-0.jpg',
+    rakshasaAbomination:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Rakshasa_Abomination_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_-0.jpg',
+    rakshasaBrute:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Rakshasa_Brute_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_dark_I-0.jpg',
+    undeadArcher:
+      '/assets/concepts/lucid-origin_Design_a_full-body_Undead_Archer_enemy_for_KALIYUGA_THE_BLEEDING_CROWN_a_dark_In-0.jpg',
   },
 } as const;
 
@@ -400,6 +489,7 @@ export const CHAMBERS: ChamberSpec[] = [
     sanjayaQuote:
       '“Lies! The Vaitarani boils with marrow and broken crowns. Sharabha hounds feast on the unburied.”',
     backgroundUrl: GAME_ASSETS.chambers.vaitaraniGhat,
+    videoUrl: GAME_ASSETS.arenaVideos.waterCourtyard,
     floorTint: 'rgba(22, 10, 12, 0.08)',
     isBossChamber: false,
     envEffect: 'blood_river',
@@ -411,14 +501,7 @@ export const CHAMBERS: ChamberSpec[] = [
       { x: 0.22, y: 0.82, color: '#ff4218', radius: 195 },
       { x: 0.78, y: 0.82, color: '#ff4218', radius: 195 },
     ],
-    props: [
-      { type: 'incense_cauldron', x: 0.32, y: 0.44 },
-      { type: 'pagoda_lantern', x: 0.68, y: 0.42 },
-      { type: 'dragon_pillar', x: 0.50, y: 0.34 },
-      { type: 'dragon_pillar', x: 0.52, y: 0.66 },
-      { type: 'weapon_rack', x: 0.28, y: 0.70 },
-      { type: 'incense_cauldron', x: 0.72, y: 0.68 },
-    ],
+    props: [],
     spawns: [
       // Wave 1: 2D Hand-Painted Sharabha Hellhounds + Vrika Stalkers + Agni Spearmen across the courtyard
       { type: 'wolf_guai', x: 0.48, y: 0.46, wave: 1 },
@@ -452,6 +535,7 @@ export const CHAMBERS: ChamberSpec[] = [
       '“Golden chains seal the northern archway to another path! Slaughter Raktabija’s pack to shatter the gate seal!”',
     backgroundUrl: GAME_ASSETS.chambers.asuraLavaLocked,
     unlockedBackgroundUrl: GAME_ASSETS.chambers.asuraLavaUnlocked,
+    videoUrl: GAME_ASSETS.arenaVideos.templeEnvironment,
     floorTint: 'rgba(24, 9, 12, 0.08)',
     isBossChamber: false,
     envEffect: 'blood_river',
@@ -463,13 +547,7 @@ export const CHAMBERS: ChamberSpec[] = [
       { x: 0.22, y: 0.82, color: '#ff2a3a', radius: 195 },
       { x: 0.78, y: 0.82, color: '#ff2a3a', radius: 195 },
     ],
-    props: [
-      { type: 'dragon_pillar', x: 0.36, y: 0.38 },
-      { type: 'dragon_pillar', x: 0.64, y: 0.38 },
-      { type: 'incense_cauldron', x: 0.50, y: 0.66 },
-      { type: 'weapon_rack', x: 0.74, y: 0.64 },
-      { type: 'pagoda_lantern', x: 0.28, y: 0.68 },
-    ],
+    props: [],
     spawns: [
       // Wave 1: 2D Swarm Mobs
       { type: 'fire_monk', x: 0.58, y: 0.36, wave: 1 },
@@ -502,6 +580,7 @@ export const CHAMBERS: ChamberSpec[] = [
     sanjayaQuote:
       '“The axles are fused with molten brass and bone. Rakshasa bruisers prowl the wreckage!”',
     backgroundUrl: GAME_ASSETS.chambers.chariotBonefield,
+    videoUrl: GAME_ASSETS.arenaVideos.battlefieldEnv,
     floorTint: 'rgba(26, 12, 8, 0.08)',
     isBossChamber: false,
     envEffect: 'lava_fissures',
@@ -513,13 +592,7 @@ export const CHAMBERS: ChamberSpec[] = [
       { x: 0.22, y: 0.80, color: '#ff5218', radius: 195 },
       { x: 0.78, y: 0.80, color: '#ff5218', radius: 195 },
     ],
-    props: [
-      { type: 'weapon_rack', x: 0.32, y: 0.38 },
-      { type: 'incense_cauldron', x: 0.52, y: 0.48 },
-      { type: 'dragon_pillar', x: 0.68, y: 0.36 },
-      { type: 'dragon_pillar', x: 0.38, y: 0.68 },
-      { type: 'pagoda_lantern', x: 0.68, y: 0.70 },
-    ],
+    props: [],
     spawns: [
       // Wave 1: 2D Swarm Mobs
       { type: 'stone_golem', x: 0.54, y: 0.46, wave: 1, trait: 'vajra_shield' },
@@ -541,17 +614,18 @@ export const CHAMBERS: ChamberSpec[] = [
   },
 
   // ==========================================================================
-  // CHAMBER IV: ACT I MID-BOSS — 3D DUNDUBHI, THE WAR-DRUM BEHEMOTH
+  // CHAMBER IV: ACT I MID-BOSS — DUNDUBHI, THE WAR-DRUM BEHEMOTH
   // ==========================================================================
   {
     id: 4,
     chapterTitle: 'Act I Sovereign · The Bronze Behemoth',
     name: 'Mandapa of the War-Drum',
-    chineseSubtitle: 'दुन्दुभि मण्डप · CHAMBER IV OF VIII (3D BOSS)',
+    chineseSubtitle: 'दुन्दुभि मण्डप · CHAMBER IV OF VIII',
     strikethroughLie: '“The temple bull bowed before the royal standard of Hastinapura...”',
     sanjayaQuote:
-      '“Dundubhi’s Chola-bronze hide deflects raw steel! Bait his horn-charge into the Kurukshetra Pillars to crack his armor!”',
-    backgroundUrl: GAME_ASSETS.chambers.warDrumColonnade,
+      '“Dundubhi’s Chola-bronze hide deflects raw steel! Bait his horn-charge into the outer Kurukshetra Pillars to crack his armor!”',
+    backgroundUrl: GAME_ASSETS.chambers.bossSanctumPhase1Alt,
+    videoUrl: GAME_ASSETS.arenaVideos.mythicEnvA,
     floorTint: 'rgba(24, 12, 8, 0.08)',
     isBossChamber: true,
     envEffect: 'lava_fissures',
@@ -562,11 +636,8 @@ export const CHAMBERS: ChamberSpec[] = [
       { x: 0.82, y: 0.80, color: '#ff5218', radius: 210 },
     ],
     props: [
-      { type: 'dragon_pillar', x: 0.34, y: 0.36 },
-      { type: 'dragon_pillar', x: 0.66, y: 0.36 },
-      { type: 'dragon_pillar', x: 0.34, y: 0.70 },
-      { type: 'dragon_pillar', x: 0.66, y: 0.70 },
-      { type: 'incense_cauldron', x: 0.50, y: 0.26 },
+      { type: 'dragon_pillar', x: 0.24, y: 0.34 },
+      { type: 'dragon_pillar', x: 0.76, y: 0.34 },
     ],
     spawns: [{ type: 'xuemo', x: 0.64, y: 0.52, wave: 1 }],
   },
@@ -583,6 +654,7 @@ export const CHAMBERS: ChamberSpec[] = [
     sanjayaQuote:
       '“Ashvatthama’s celestial Brahmashira weapon scorches the horizon! Four-armed Kaliyuga Avatars prowl the burning war-tents!”',
     backgroundUrl: GAME_ASSETS.chambers.soulFireSanctum,
+    videoUrl: GAME_ASSETS.arenaVideos.fogClearingSanctum,
     floorTint: 'rgba(22, 12, 8, 0.08)',
     isBossChamber: false,
     envEffect: 'lava_fissures',
@@ -594,13 +666,7 @@ export const CHAMBERS: ChamberSpec[] = [
       { x: 0.22, y: 0.80, color: '#ff6a18', radius: 195 },
       { x: 0.78, y: 0.80, color: '#ff6a18', radius: 195 },
     ],
-    props: [
-      { type: 'dragon_pillar', x: 0.38, y: 0.38 },
-      { type: 'dragon_pillar', x: 0.62, y: 0.38 },
-      { type: 'incense_cauldron', x: 0.50, y: 0.64 },
-      { type: 'pagoda_lantern', x: 0.30, y: 0.68 },
-      { type: 'weapon_rack', x: 0.72, y: 0.68 },
-    ],
+    props: [],
     spawns: [
       // Wave 1: 2D Kaliyuga Cosmic Avatar + Preta Bowmen + Sharabha Hounds
       { type: 'furnace_titan', x: 0.56, y: 0.48, wave: 1, trait: 'vajra_shield' },
@@ -623,17 +689,18 @@ export const CHAMBERS: ChamberSpec[] = [
   },
 
   // ==========================================================================
-  // CHAMBER VI: SHATTERED GOPURAM CAUSEWAY (HIGH-INTENSITY TRAP GAUNTLET)
+  // CHAMBER VI: ASURA MOLTEN FORGE RING (EXPANSIVE OPEN ARENA)
   // ==========================================================================
   {
     id: 6,
     chapterTitle: 'Act II · The Asura Inner Sanctum',
-    name: 'Shattered Gopuram Causeway',
-    chineseSubtitle: 'गोपुरम् सेतु · CHAMBER VI OF VIII',
+    name: 'Asura Molten Forge Ring',
+    chineseSubtitle: 'असुर अग्निकुण्ड · CHAMBER VI OF VIII',
     strikethroughLie: '“Pilgrims walked unharmed across the temple causeway...”',
     sanjayaQuote:
       '“Every flagstone is rigged with bloodied iron spikes and Agni lotus vents. Lure the Rakshasa bruisers onto the plates!”',
-    backgroundUrl: GAME_ASSETS.chambers.gopuramCauseway,
+    backgroundUrl: GAME_ASSETS.chambers.gopuramCausewayAlt,
+    videoUrl: GAME_ASSETS.arenaVideos.lavaArena,
     floorTint: 'rgba(24, 10, 10, 0.08)',
     isBossChamber: false,
     envEffect: 'lava_fissures',
@@ -645,13 +712,7 @@ export const CHAMBERS: ChamberSpec[] = [
       { x: 0.22, y: 0.82, color: '#ff2a3a', radius: 195 },
       { x: 0.78, y: 0.82, color: '#ff2a3a', radius: 195 },
     ],
-    props: [
-      { type: 'incense_cauldron', x: 0.40, y: 0.42 },
-      { type: 'incense_cauldron', x: 0.62, y: 0.60 },
-      { type: 'dragon_pillar', x: 0.52, y: 0.34 },
-      { type: 'dragon_pillar', x: 0.48, y: 0.70 },
-      { type: 'weapon_rack', x: 0.32, y: 0.66 },
-    ],
+    props: [],
     spawns: [
       // Wave 1: 2D Swarm Mobs
       { type: 'stone_golem', x: 0.52, y: 0.42, wave: 1, trait: 'vajra_shield' },
@@ -684,7 +745,8 @@ export const CHAMBERS: ChamberSpec[] = [
     sanjayaQuote:
       '“Golden chains and an Om padlock bind Vrikodara’s threshold! Slaughter the Royal Asura Guard to shatter the seal!”',
     backgroundUrl: GAME_ASSETS.chambers.asuraLavaLocked,
-    unlockedBackgroundUrl: GAME_ASSETS.chambers.asuraLavaUnlocked,
+    unlockedBackgroundUrl: GAME_ASSETS.chambers.asuraLavaLocked,
+    videoUrl: GAME_ASSETS.arenaVideos.mythicEnvB,
     floorTint: 'rgba(26, 10, 8, 0.06)',
     isBossChamber: false,
     envEffect: 'lava_fissures',
@@ -743,12 +805,14 @@ export const CHAMBERS: ChamberSpec[] = [
     id: 8,
     chapterTitle: 'Final Sovereign · The Bleeding Crown',
     name: 'Sanctum of the Infernal Maw',
-    chineseSubtitle: 'वृकोदर गर्भगृह · CHAMBER VIII OF VIII (FINAL 3D BOSS)',
+    chineseSubtitle: 'वृकोदर गर्भगृह · CHAMBER VIII OF VIII',
     strikethroughLie: '“And the righteous Pandava general laid down his mace in peace...”',
     sanjayaQuote:
       '“Behold Vrikodara! Ten thousand chariots burn inside his abdominal furnace—and when the blood-eclipse rises, his twin Tridents tear the cosmos!”',
     backgroundUrl: GAME_ASSETS.chambers.bossSanctumPhase1,
-    phase2BackgroundUrl: GAME_ASSETS.chambers.bossSanctumPhase2Eclipse,
+    phase2BackgroundUrl: GAME_ASSETS.chambers.bossSanctumPhase1,
+    videoUrl: GAME_ASSETS.arenaVideos.mythicEnvC,
+    phase2VideoUrl: GAME_ASSETS.arenaVideos.mythicEnvC,
     floorTint: 'rgba(22, 6, 10, 0.06)',
     isBossChamber: true,
     envEffect: 'eclipse_wind',
@@ -765,9 +829,7 @@ export const CHAMBERS: ChamberSpec[] = [
       { type: 'dragon_pillar', x: 0.66, y: 0.36 },
       { type: 'dragon_pillar', x: 0.34, y: 0.70 },
       { type: 'dragon_pillar', x: 0.66, y: 0.70 },
-      { type: 'incense_cauldron', x: 0.50, y: 0.28 },
     ],
     spawns: [{ type: 'vrikodara', x: 0.64, y: 0.52, wave: 1 }],
   },
 ];
-

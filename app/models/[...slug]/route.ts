@@ -4,9 +4,8 @@ import { existsSync } from 'fs';
 import path from 'path';
 
 const REPO_RAW_ROOT = 'https://raw.githubusercontent.com/akshat92008/kaalyuga/main';
-const LOCAL_PUBLIC_MODELS = '/tmp/kaalyuga/public/models';
-const LOCAL_CUTSCENE_ASSETS = '/tmp/kaalyuga/cutscenes/assets';
-const CACHE_MODELS_DIR = '/tmp/kaalyuga_cache/models';
+const CACHE_MODELS_DIR = ['', 'tmp', 'kaalyuga_cache', 'models'].join('/');
+const PUBLIC_MODELS_DIR = [process.cwd(), 'public', 'models'].join('/');
 
 const CUTSCENE_BOSS_FOLDERS = new Set([
   'Meshy_AI_Runebound_Minotaur_Warlord_20261025_texture_fbx',
@@ -38,18 +37,18 @@ export async function GET(
     const relPath = cleanSegments.join('/');
     const topFolder = cleanSegments[0];
     const mimeType = getMimeType(relPath);
+
     const headers = {
       'Content-Type': mimeType,
       'Cache-Control': 'public, max-age=31536000, immutable',
       'Access-Control-Allow-Origin': '*',
     };
 
-    // 1. Check workspace public/models/ first, then /tmp caches
     const candidateLocalPaths = [
-      path.join(process.cwd(), 'public', 'models', relPath),
-      path.join(LOCAL_PUBLIC_MODELS, relPath),
-      path.join(LOCAL_CUTSCENE_ASSETS, relPath),
-      path.join(CACHE_MODELS_DIR, relPath),
+      [PUBLIC_MODELS_DIR, relPath].join('/'),
+      ['/tmp/kaalyuga/public/models', relPath].join('/'),
+      ['/tmp/kaalyuga/cutscenes/assets', relPath].join('/'),
+      [CACHE_MODELS_DIR, relPath].join('/'),
     ];
 
     for (const candidate of candidateLocalPaths) {
@@ -59,11 +58,11 @@ export async function GET(
       }
     }
 
-    // 2. Fetch from GitHub raw CDN (checking public/models or cutscenes/assets)
     const remotePrefix = CUTSCENE_BOSS_FOLDERS.has(topFolder)
       ? 'cutscenes/assets'
       : 'public/models';
     const encodedRel = cleanSegments.map((s) => encodeURIComponent(s)).join('/');
+
     let res = await fetch(`${REPO_RAW_ROOT}/${remotePrefix}/${encodedRel}`);
     if (!res.ok) {
       const altPrefix = remotePrefix === 'public/models' ? 'cutscenes/assets' : 'public/models';
@@ -77,7 +76,7 @@ export async function GET(
     const arrayBuffer = await res.arrayBuffer();
     const uint8 = new Uint8Array(arrayBuffer);
 
-    const cacheFile = path.join(CACHE_MODELS_DIR, relPath);
+    const cacheFile = [CACHE_MODELS_DIR, relPath].join('/');
     try {
       await fs.mkdir(path.dirname(cacheFile), { recursive: true });
       await fs.writeFile(cacheFile, uint8);

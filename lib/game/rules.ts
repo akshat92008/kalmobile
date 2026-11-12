@@ -648,5 +648,3 @@ export function computeGodOfWarHeavyStyleSpec(
     cameraTrauma: Math.min(1, Number((0.68 * orbScale).toFixed(2))),
   };
 }
-
-
